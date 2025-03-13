@@ -19,32 +19,37 @@ Search Bar – Allows users to find specific products.
 
 Category Selection – Users can choose from various categories, including:
   
-  Phones
-  Laptops
-  Tablets
-  Smartwatches
-  Headphones
-  Keyboards
+  Phones,
+  Laptops,
+  Tablets,
+  Smartwatches,
+  Headphones,
+  Keyboards,
   Computer Accessories
 
 Product Listing Process
- 
+
   Enter product details (brand, model, specifications, etc.).
+  
   Checklist for Condition – Ensures accurate condition reporting.
+  
   Estimated Price Display – Provides a price suggestion based on the condition.
+  
   Enter Address – Seller provides location details.
+  
   Pickup Slot Selection – Users schedule a pickup for the listed item.
+  
   Payment Integration – Secure payment options for transactions.
 
 3. Buying Functionality
 
-Browse & Purchase Categories
+Browse & Purchase Categories:
   
-  Refurbished Phones
-  Laptops
-  Tablets
-  Smartwatches
-  Headphones
+  Refurbished Phones,
+  Laptops,
+  Tablets,
+  Smartwatches,
+  Headphones,
   Computer Accessories
 
 Product Details View – Buyers can see detailed product descriptions.
@@ -54,5 +59,7 @@ Secure Payment Processing – Various payment options for safe transactions.
 4. User Account & Authentication
 
 User Registration & Login – Secure sign-up and login options.
+
 Profile Management – Users can edit personal details and track activities.
+
 Order History & Tracking – Buyers and sellers can view their past transactions
