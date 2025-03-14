@@ -1,5 +1,29 @@
-# DW3_FinalProject
-This is the final project for DW3_Web_Server. A website to buy and sell old electronic gadgets online, made in php and used xampp (Apache and SQL).
+
+A Platform for Buying and Selling Used Electronics
+
+Introduction
+
+This project is a web-based marketplace designed to facilitate the buying and selling of used electronic devices such as smartphones, laptops, tablets, and other gadgets. The platform aims to provide a secure and user-friendly environment where sellers can list their old devices and buyers can browse, compare, and purchase them at competitive prices.
+
+With the increasing demand for affordable electronics and the growing issue of e-waste, this platform will help users get value for their old devices while promoting sustainable practices.
+
+Project Objective
+
+The primary goal of this project is to create an efficient and trustworthy platform for second-hand electronics by offering:
+
+A smooth and hassle-free experience for selling and buying used devices.
+
+A price estimation tool to help sellers determine a fair market value.
+
+A reliable verification system to prevent fraud and scams.
+
+Easy product search and filtering options for buyers.
+
+A simple and secure transaction process.
+
+Market Scope & Potential
+
+The second-hand electronics market in Canada is growing rapidly due to factors like frequent device upgrades, rising inflation, and increasing awareness about electronic waste. This platform can tap into this demand by offering a structured and safe marketplace.
 
 Features of the Web Application
 
@@ -18,39 +42,48 @@ Search Bar – Allows users to find specific products.
 2. Selling Functionality
 
 Category Selection – Users can choose from various categories, including:
-  
-  Phones,
-  Laptops,
-  Tablets,
-  Smartwatches,
-  Headphones,
-  Keyboards,
-  Computer Accessories
+
+Phones
+
+Laptops
+
+Tablets
+
+Smartwatches
+
+Headphones
+
+Keyboards
+
+Computer Accessories
 
 Product Listing Process
 
-  Enter product details (brand, model, specifications, etc.).
-  
-  Checklist for Condition – Ensures accurate condition reporting.
-  
-  Estimated Price Display – Provides a price suggestion based on the condition.
-  
-  Enter Address – Seller provides location details.
-  
-  Pickup Slot Selection – Users schedule a pickup for the listed item.
-  
-  Payment Integration – Secure payment options for transactions.
+Enter product details (brand, model, specifications, etc.).
+
+Checklist for Condition – Ensures accurate condition reporting.
+
+Estimated Price Display – Provides a price suggestion based on the condition.
+
+Enter Address – Seller provides location details.
+
+Payment Integration – Secure payment options for transactions.
 
 3. Buying Functionality
 
 Browse & Purchase Categories:
-  
-  Refurbished Phones,
-  Laptops,
-  Tablets,
-  Smartwatches,
-  Headphones,
-  Computer Accessories
+
+Refurbished Phones
+
+Laptops
+
+Tablets
+
+Smartwatches
+
+Headphones
+
+Computer Accessories
 
 Product Details View – Buyers can see detailed product descriptions.
 
@@ -62,4 +95,22 @@ User Registration & Login – Secure sign-up and login options.
 
 Profile Management – Users can edit personal details and track activities.
 
-Order History & Tracking – Buyers and sellers can view their past transactions
+Order History & Tracking – Buyers and sellers can view their past transactions.
+
+Technology Stack
+
+Frontend: HTML, CSS, JavaScript
+
+Backend: PHP
+
+Database: MySQL (Using XAMPP for Apache and SQL)
+
+Server: Apache
+
+Payment Gateway: Integrated for secure transactions
+
+Conclusion
+
+This project aims to create a reliable and efficient marketplace for pre-owned electronics. By ensuring secure transactions, transparent pricing, and easy accessibility, it will help users get the best deals while reducing e-waste and promoting sustainability.
+
+Note: The Architectural Diagram and Database Schema Design have been submitted with this document.
