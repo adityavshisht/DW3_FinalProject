@@ -1,12 +1,9 @@
-<?php include 'header.php'; ?>
-
-<div class="container">
-    <h1>Buy or Sell your Devices for the Best Price</h1>
-    <p>Get an instant quote and sell / buy your electronic devices hassle-free.</p>
-    <div class="button-group">
-        <a href="sellpage.php" class="btn">Sell</a>
-        <a href="buypage.php" class="btn">Buy</a>
-    </div>
-</div>
-
+<?php
+session_start();
+include 'header.php';
+?>
+<main>
+    <h2>Welcome to ReTechX</h2>
+    <p>Buy and sell used electronics securely and conveniently.</p>
+</main>
 <?php include 'footer.php'; ?>
