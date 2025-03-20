@@ -24,6 +24,7 @@ Sell Button – Allows users to list items for sale.
 Buy Button – Directs users to browse available products.
 Login Functionality – Enables user authentication for personalized access.
 Search Bar – Allows users to find specific products.
+
 2. Selling Functionality
 Category Selection
 Users can choose from various categories, including:
@@ -35,6 +36,7 @@ Smartwatches
 Headphones
 Keyboards
 Computer Accessories
+
 Product Listing Process
 Enter product details (brand, model, specifications, etc.).
 Checklist for Condition – Ensures accurate condition reporting.
@@ -42,6 +44,7 @@ Estimated Price Display – Provides a price suggestion based on the condition.
 Enter Address – Seller provides location details.
 Payment Integration – Secure payment options for transactions.
 Pickup Slot Booking – Sellers can book a pickup time for their device, making the process more convenient.
+
 3. Buying Functionality
 Browse & Purchase Categories:
 Refurbished Phones
@@ -52,11 +55,13 @@ Headphones
 Computer Accessories
 Product Details View – Buyers can see detailed product descriptions.
 Secure Payment Processing – Various payment options for safe transactions.
+
 4. Pickup Slot Booking Functionality
 Sellers can select a convenient date and time for the pickup.
 The platform will assign a pickup partner to collect the device.
 Live tracking of pickup status for sellers.
 Buyers can opt for delivery services (if applicable).
+
 5. User Account & Authentication
 User Registration & Login – Secure sign-up and login options.
 Profile Management – Users can edit personal details and track activities.
