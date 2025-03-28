@@ -90,3 +90,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['turns_on'])) {
             <button type="submit">Continue →</button>
         </form>
     </div>
+    <?php include 'footer.php'; ?>

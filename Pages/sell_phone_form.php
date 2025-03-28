@@ -71,3 +71,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calls'])) {
         </form>
     </div>
 
+    <?php include 'footer.php'; ?>
