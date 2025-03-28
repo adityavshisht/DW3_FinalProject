@@ -48,7 +48,7 @@ $result = $conn->query($sql);
                         <p><strong>Price:</strong> $<?= number_format($product['price'], 2) ?></p>
 
                         <?php if (isset($_SESSION['user_id'])): ?>
-                            <a href="buy_product.php?id=<?= $product['product_id'] ?>" class="btn">Buy Now</a>
+                            <a href="checkout.php?id=<?= $product['product_id'] ?>" class="btn">Buy Now</a>
                         <?php else: ?>
                             <a href="login.php?redirect=buy_product.php&id=<?= $product['product_id'] ?>" class="btn">Buy</a>
                         <?php endif; ?>
