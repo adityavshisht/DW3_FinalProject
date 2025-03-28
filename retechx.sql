@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 28, 2025 at 03:32 AM
+-- Generation Time: Mar 28, 2025 at 05:39 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -134,17 +134,18 @@ CREATE TABLE `products` (
   `condition` varchar(50) DEFAULT NULL,
   `price` decimal(10,2) DEFAULT NULL,
   `status` varchar(50) DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp()
+  `created_at` datetime DEFAULT current_timestamp(),
+  `image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`product_id`, `user_id`, `category_id`, `title`, `brand`, `model`, `specifications`, `condition`, `price`, `status`, `created_at`) VALUES
-(1, 1, 1, 'iPhone 12', 'Apple', 'A2403', '128GB, Black', 'Good', 499.99, 'Available', '2025-03-27 20:32:07'),
-(2, 2, 2, 'Dell XPS 13', 'Dell', '9380', 'i7, 16GB RAM, 512GB SSD', 'Very Good', 899.00, 'Available', '2025-03-27 20:32:07'),
-(3, 1, 5, 'Sony WH-1000XM4', 'Sony', 'WH-1000XM4', 'Noise Cancelling Headphones', 'Like New', 250.00, 'Available', '2025-03-27 20:32:07');
+INSERT INTO `products` (`product_id`, `user_id`, `category_id`, `title`, `brand`, `model`, `specifications`, `condition`, `price`, `status`, `created_at`, `image`) VALUES
+(1, 1, 1, 'iPhone 12', 'Apple', 'A2403', '128GB, Black', 'Good', 499.99, 'Available', '2025-03-27 20:32:07', 'iphone12.jpg'),
+(2, 2, 2, 'Dell XPS 13', 'Dell', '9380', 'i7, 16GB RAM, 512GB SSD', 'Very Good', 899.00, 'Available', '2025-03-27 20:32:07', 'laptop1.jpg'),
+(3, 1, 5, 'Sony WH-1000XM4', 'Sony', 'WH-1000XM4', 'Noise Cancelling Headphones', 'Like New', 250.00, 'Available', '2025-03-27 20:32:07', 'headphones1.jpg');
 
 -- --------------------------------------------------------
 
