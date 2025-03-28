@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 28, 2025 at 01:33 AM
+-- Generation Time: Mar 28, 2025 at 03:32 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -191,9 +191,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `name`, `email`, `password`, `phone`, `address`, `user_type`) VALUES
-(1, 'Alice Smith', 'alice@example.com', 'test123', '123-456-7890', '123 Maple St', 'user'),
-(2, 'Bob Johnson', 'bob@example.com', 'test456', '987-654-3210', '456 Oak Ave', 'user'),
-(3, 'Admin User', 'admin@example.com', 'adminpass', '111-222-3333', '789 Admin Blvd', 'admin');
+(1, 'Alice Smith', 'alice@example.com', '$2y$10$YQdD5pnAKk5zKP5DKy0rju6rnxJ3SjoqRBhKaTaJTbzPYEO3zWV2K', '123-456-7890', '123 Maple St', 'user'),
+(2, 'Bob Johnson', 'bob@example.com', '$2y$10$z48NO/cHQfbM8IfNaawU7OZ/xpvhfXpcZZ4jcOq3DCIu1TPxUDivS', '987-654-3210', '456 Oak Ave', 'user'),
+(3, 'Admin User', 'admin@example.com', '$2y$10$3fbgN0/jn4Hryzi8VDFUVu4vWXPGThTefb9FDzUYa9kgPZKPlqH0e', '111-222-3333', '789 Admin Blvd', 'admin'),
+(4, 'adi@proj25', 'adi@proj25', 'YzGUT0CRE8se0WDNgnXGesypMT39YUm', NULL, NULL, 'user'),
+(5, 'harman@proj25', 'harman@proj25', '$2y$10$fGJPO56UI2KPsHZ3pW0Hg.YzGUT0CRE8se0WDNgnXGesypMT39YUm', NULL, NULL, 'user');
 
 --
 -- Indexes for dumped tables
@@ -297,7 +299,7 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
