@@ -97,25 +97,7 @@ INSERT INTO `payments` (`payment_id`, `order_id`, `buyer_id`, `payment_method`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pickup_slots`
 --
-
-CREATE TABLE `pickup_slots` (
-  `slot_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `seller_id` int(11) NOT NULL,
-  `slot_date` datetime DEFAULT NULL,
-  `slot_time` time DEFAULT NULL,
-  `status` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `pickup_slots`
---
-
-INSERT INTO `pickup_slots` (`slot_id`, `product_id`, `seller_id`, `slot_date`, `slot_time`, `status`) VALUES
-(1, 1, 1, '2025-03-30 00:00:00', '14:00:00', 'Confirmed'),
-(2, 3, 1, '2025-04-01 00:00:00', '10:30:00', 'Pending');
 
 -- --------------------------------------------------------
 
@@ -227,11 +209,6 @@ ALTER TABLE `payments`
 
 --
 -- Indexes for table `pickup_slots`
---
-ALTER TABLE `pickup_slots`
-  ADD PRIMARY KEY (`slot_id`),
-  ADD KEY `product_id` (`product_id`),
-  ADD KEY `seller_id` (`seller_id`);
 
 --
 -- Indexes for table `products`
@@ -279,10 +256,6 @@ ALTER TABLE `payments`
   MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `pickup_slots`
---
-ALTER TABLE `pickup_slots`
-  MODIFY `slot_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -322,13 +295,6 @@ ALTER TABLE `payments`
   ADD CONSTRAINT `payments_ibfk_2` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`user_id`);
 
 --
--- Constraints for table `pickup_slots`
---
-ALTER TABLE `pickup_slots`
-  ADD CONSTRAINT `pickup_slots_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
-  ADD CONSTRAINT `pickup_slots_ibfk_2` FOREIGN KEY (`seller_id`) REFERENCES `users` (`user_id`);
-
---
 -- Constraints for table `products`
 --
 ALTER TABLE `products`
@@ -346,3 +312,27 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+-- Merged Queries --
+
+CREATE TABLE seller_info (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    address TEXT NOT NULL,
+    preferred_date DATE NOT NULL,
+    preferred_time VARCHAR(50) NOT NULL,
+    created_at DATETIME NOT NULL
+);
+
+CREATE TABLE pickup_slots (
+    slot_id INT,
+    product_id INT,
+    seller_id INT,
+    slot_date DATE,
+    slot_time TIME,
+    status VARCHAR(20),
+    FOREIGN KEY (seller_id) REFERENCES seller_info(id)
+);
