@@ -3,7 +3,7 @@ session_start();
 include 'header.php';
 include 'database_connection.php';
 
-// Fetch products
+// Fetch products from DB
 $sql = "
     SELECT 
         p.product_id,
@@ -18,6 +18,7 @@ $sql = "
     JOIN categories c ON p.category_id = c.category_id
     ORDER BY p.created_at DESC
 ";
+
 $result = $conn->query($sql);
 ?>
 
@@ -29,7 +30,8 @@ $result = $conn->query($sql);
             <div class="product-grid">
                 <?php while ($product = $result->fetch_assoc()): ?>
                     <div class="product-card">
-                        <img src="../imgs/<?= htmlspecialchars($product['image']) ?>" alt="Product Image" class="product-image">
+                    <img src="<?= (isset($_SERVER['PHP_SELF']) && str_contains($_SERVER['PHP_SELF'], 'Pages')) ? '../imgs/' : 'imgs/' ?><?= htmlspecialchars($product['image']) ?>" alt="Product Image" class="product-image">
+
                         <h3><?= htmlspecialchars($product['title']) ?></h3>
                         <p><strong>Category:</strong> <?= htmlspecialchars($product['category_name']) ?></p>
                         <p><strong>Brand:</strong> <?= htmlspecialchars($product['brand']) ?></p>
@@ -37,11 +39,14 @@ $result = $conn->query($sql);
                         <p><strong>Specs:</strong> <?= htmlspecialchars($product['specifications']) ?></p>
                         <p><strong>Price:</strong> $<?= number_format($product['price'], 2) ?></p>
 
-                        <?php if (isset($_SESSION['user_id'])): ?>
-                            <a href="buy_product.php?id=<?= $product['product_id'] ?>" class="btn">Buy Now</a>
-                        <?php else: ?>
-                            <a href="login.php?redirect=buy.php" class="btn">Login to Buy</a>
-                        <?php endif; ?>
+                        <div class="btn-wrapper">
+                            <?php if (isset($_SESSION['user_id'])): ?>
+                                <a href="checkout.php?id=<?= $product['product_id'] ?>" class="btn">Buy Now</a>
+                                <a href="cart.php?id=<?= $product['product_id'] ?>" class="btn">Add to Cart</a>
+                            <?php else: ?>
+                                <a href="login.php?redirect=buy_product.php&id=<?= $product['product_id'] ?>" class="btn">Login to Buy</a>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 <?php endwhile; ?>
             </div>
