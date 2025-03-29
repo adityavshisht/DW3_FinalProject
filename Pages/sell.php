@@ -3,7 +3,6 @@ session_start();
 include 'header.php';
 include 'database_connection.php';
 
-// Fetch categories from database
 $categories = [];
 $result = $conn->query("SELECT category_id, category_name FROM categories");
 
@@ -65,12 +64,12 @@ if ($result && $result->num_rows > 0) {
                 targetPage = 'sell_tablet_form.php';
                 break;
             case 'Smartwatch':
-                targetPage = 'sell_smartwatch_form.php';
+                targetPage = 'sell_smartwatches_form.php';
                 break;
             case 'Headphones':
                 targetPage = 'sell_headphones_form.php';
                 break;
-            case 'Keyboard':
+            case 'Keyboards':
                 targetPage = 'sell_keyboard_form.php';
                 break;
             case 'Computer Accessories':

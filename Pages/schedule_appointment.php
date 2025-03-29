@@ -3,11 +3,14 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+include 'header.php';
+include 'database_connection.php'; 
+
 $appointmentConfirmed = false;
 $scheduledDate = '';
 $scheduledTime = '';
+$errorMessage = '';
 
-// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (
         !empty($_POST['name']) &&
@@ -17,40 +20,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         !empty($_POST['preferred_date']) &&
         !empty($_POST['preferred_time'])
     ) {
-        $_SESSION['appointment'] = [
-            'name' => $_POST['name'],
-            'email' => $_POST['email'],
-            'phone' => $_POST['phone'],
-            'address' => $_POST['address'],
-            'preferred_date' => $_POST['preferred_date'],
-            'preferred_time' => $_POST['preferred_time']
-        ];
+        $name = htmlspecialchars($_POST['name']);
+        $email = htmlspecialchars($_POST['email']);
+        $phone = htmlspecialchars($_POST['phone']);
+        $address = htmlspecialchars($_POST['address']);
+        $preferred_date = $_POST['preferred_date'];
+        $preferred_time = $_POST['preferred_time'];
 
-        $appointmentConfirmed = true;
-        $scheduledDate = $_POST['preferred_date'];
-        $scheduledTime = $_POST['preferred_time'];
+       
+        $sql = "INSERT INTO seller_info (name, email, phone, address, preferred_date, preferred_time, created_at) 
+                VALUES (?, ?, ?, ?, ?, ?, NOW())";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssssss", $name, $email, $phone, $address, $preferred_date, $preferred_time);
+
+        if ($stmt->execute()) {
+            $appointmentConfirmed = true;
+            $scheduledDate = $preferred_date;
+            $scheduledTime = $preferred_time;
+          
+            $seller_id = $conn->insert_id;
+
+            $slot_id = 0;
+            switch ($preferred_time) {
+                case '9:00-11:00':
+                    $slot_id = 1;
+                    $slot_time = '14:00:00';
+                    break;
+                case '11:00-13:00':
+                    $slot_id = 2;
+                    $slot_time = '10:30:00';
+                    break;
+                case '13:00-15:00':
+                    $slot_id = 3;
+                    $slot_time = '13:00:00';
+                    break;
+                case '15:00-17:00':
+                    $slot_id = 4;
+                    $slot_time = '15:00:00';
+                    break;
+                default:
+                    $slot_id = 0;
+                    $slot_time = '00:00:00';
+            }
+
+            $product_id = 1; 
+            $slot_date = $preferred_date;
+            $status = 'Confirmed';
+
+            if ($slot_id > 0) {
+                $sql_pickup = "INSERT INTO pickup_slots (slot_id, product_id, seller_id, slot_date, slot_time, status) 
+                               VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt_pickup = $conn->prepare($sql_pickup);
+                $stmt_pickup->bind_param("iiisss", $slot_id, $product_id, $seller_id, $slot_date, $slot_time, $status);
+
+                if (!$stmt_pickup->execute()) {
+                    $errorMessage = "Error saving to pickup_slots table. Please try again.";
+                }
+                $stmt_pickup->close();
+            } else {
+                $errorMessage = "Invalid time slot selected.";
+            }
+        } else {
+            $errorMessage = "Error scheduling appointment. Please try again.";
+        }
+
+        $stmt->close();
     } else {
-        echo '<p style="color: red; text-align:center;">❌ Please fill out all required fields.</p>';
+        $errorMessage = "Please fill out all required fields.";
     }
 }
-?>
 
-<?php include 'header.php'; ?>
+$conn->close();
+?>
 
 <div class="container">
     <h2>Schedule Your Appointment</h2>
     <p>Please provide your details for our technician to visit and inspect your item.</p>
 
+    <?php if (!empty($errorMessage)): ?>
+        <p style="color: red; text-align:center;"><?php echo $errorMessage; ?></p>
+    <?php endif; ?>
+
     <?php if ($appointmentConfirmed): ?>
-        <!-- Confirmation JS -->
         <script>
             setTimeout(function() {
-                alert("✅ Appointment scheduled for <?= htmlspecialchars($scheduledDate) ?> at <?= htmlspecialchars($scheduledTime) ?>.");
+                alert("Appointment scheduled for <?= htmlspecialchars($scheduledDate) ?> at <?= htmlspecialchars($scheduledTime) ?>.");
                 window.location.href = "index.php";
             }, 100);
         </script>
     <?php else: ?>
-        <!-- Appointment Form -->
         <form method="POST" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>">
             <label>Full Name:</label>
             <input type="text" name="name" required>
