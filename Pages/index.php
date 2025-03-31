@@ -3,6 +3,11 @@ session_start();
 include 'header.php';
 include 'database_connection.php';
 
+// Ensure cart session exists
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+}
+
 // Fetch latest 6 products
 $sql = "
     SELECT 
@@ -25,7 +30,7 @@ $result = $conn->query($sql);
 <div class="wrapper">
     <main>
         <?php if (isset($_SESSION['user_id'])): ?>
-            <h2>Welcome back, <?= htmlspecialchars($_SESSION['username']) ?> 👋</h2>
+            <h2>Welcome back, <?= htmlspecialchars($_SESSION['username'] ?? 'User') ?> 👋</h2>
             <p>Explore new listings or manage your profile.</p>
         <?php else: ?>
             <h2>Welcome to ReTechX</h2>
@@ -48,9 +53,11 @@ $result = $conn->query($sql);
                         <p><strong>Price:</strong> $<?= number_format($product['price'], 2) ?></p>
 
                         <?php if (isset($_SESSION['user_id'])): ?>
-                            <a href="checkout.php?id=<?= $product['product_id'] ?>" class="btn">Buy Now</a>
+                            <a href="checkout.php?product_id=<?= urlencode($product['product_id']) ?>" class="btn">Buy Now</a>
+                            <a href="add_to_cart.php?product_id=<?= urlencode($product['product_id']) ?>" class="btn btn-cart">Add to Cart</a>
                         <?php else: ?>
-                            <a href="login.php?redirect=buy_product.php&id=<?= $product['product_id'] ?>" class="btn">Buy</a>
+                            <a href="login.php?redirect=checkout.php?product_id=<?= urlencode($product['product_id']) ?>" class="btn">Buy</a>
+                            <a href="login.php?redirect=cart.php" class="btn btn-cart">Add to Cart</a>
                         <?php endif; ?>
                     </div>
                 <?php endwhile; ?>

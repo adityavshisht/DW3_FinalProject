@@ -3,6 +3,24 @@ session_start();
 include 'header.php';
 include 'database_connection.php';
 
+// Handle Add to Cart functionality
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_to_cart'])) {
+    $product_id = $_POST['product_id'];
+    
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
+    }
+    
+    if (!isset($_SESSION['cart'][$product_id])) {
+        $_SESSION['cart'][$product_id] = 1; // Default quantity = 1
+    } else {
+        $_SESSION['cart'][$product_id] += 1;
+    }
+    
+    header("Location: cart.php");
+    exit();
+}
+
 // Fetch products from DB
 $sql = "
     SELECT 
@@ -30,7 +48,7 @@ $result = $conn->query($sql);
             <div class="product-grid">
                 <?php while ($product = $result->fetch_assoc()): ?>
                     <div class="product-card">
-                    <img src="<?= (isset($_SERVER['PHP_SELF']) && str_contains($_SERVER['PHP_SELF'], 'Pages')) ? '../imgs/' : 'imgs/' ?><?= htmlspecialchars($product['image']) ?>" alt="Product Image" class="product-image">
+                        <img src="<?= (isset($_SERVER['PHP_SELF']) && str_contains($_SERVER['PHP_SELF'], 'Pages')) ? '../imgs/' : 'imgs/' ?><?= htmlspecialchars($product['image']) ?>" alt="Product Image" class="product-image">
 
                         <h3><?= htmlspecialchars($product['title']) ?></h3>
                         <p><strong>Category:</strong> <?= htmlspecialchars($product['category_name']) ?></p>
@@ -41,10 +59,14 @@ $result = $conn->query($sql);
 
                         <div class="btn-wrapper">
                             <?php if (isset($_SESSION['user_id'])): ?>
-                                <a href="checkout.php?id=<?= $product['product_id'] ?>" class="btn">Buy Now</a>
-                                <a href="cart.php?id=<?= $product['product_id'] ?>" class="btn">Add to Cart</a>
+                                <a href="checkout.php?buy_now=<?= $product['product_id'] ?>" class="btn">Buy Now</a>
+                                <form method="POST" style="display:inline;">
+                                    <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
+                                    <button type="submit" name="add_to_cart" class="btn btn-cart">Add to Cart</button>
+                                </form>
                             <?php else: ?>
                                 <a href="login.php?redirect=buy_product.php&id=<?= $product['product_id'] ?>" class="btn">Login to Buy</a>
+                                <a href="login.php?redirect=cart.php" class="btn btn-cart">Login to Add to Cart</a>
                             <?php endif; ?>
                         </div>
                     </div>
