@@ -1,10 +1,10 @@
 <?php
-// Start session only if it's not already started
+// Start a session only if it's not already active
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Prevent function redeclaration
+// Define helper only once to avoid redeclaration errors
 if (!function_exists('protect_link')) {
     function protect_link($page) {
         return isset($_SESSION['user_id']) ? $page : 'login.php?redirect=' . urlencode($page);

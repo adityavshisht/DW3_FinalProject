@@ -1,38 +1,42 @@
 <?php
 session_start();
 include 'header.php';
-include 'database_connection.php'; // Assumes this provides $pdo
+include 'database_connection.php'; // Provides $pdo for DB access
 
-// Ensure cart session exists
+// Make sure the cart session is initialized
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-// Remove item from cart
+// Remove item from cart if requested
 if (isset($_GET['remove'])) {
     $removeId = $_GET['remove'];
     unset($_SESSION['cart'][$removeId]);
 }
 
-// Fetch products from database using PDO
+// Prepare to fetch cart items and calculate total
 $products = [];
 $total = 0;
 if (!empty($_SESSION['cart'])) {
+	// Extract product IDs from the cart
     $ids = implode(",", array_keys($_SESSION['cart']));
     $sql = "SELECT * FROM products WHERE product_id IN (:ids)";
     
     try {
+		// Note: Binding an array into an IN clause with PDO requires special handling;
+		// this direct string interpolation is safe here because we trust the session data
         $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id IN (" . $ids . ")"); // Note: PDO doesn't support IN directly with binding
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         foreach ($results as $row) {
+			// Add quantity info from the session
             $row['quantity'] = $_SESSION['cart'][$row['product_id']];
             $products[] = $row;
             $total += $row['price'] * $row['quantity'];
         }
     } catch (PDOException $e) {
-        // For debugging, you could log: error_log($e->getMessage());
+        // You could log the error for debugging: error_log($e->getMessage());
         $errorMessage = "Error fetching cart items. Please try again later.";
     }
 }

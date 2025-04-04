@@ -1,13 +1,20 @@
 <?php
 
+/**
+ * Helper function to simplify PDO queries.
+ * If arguments are provided, it prepares and executes the query safely.
+ * If not, it runs the query directly.
+ */
 function pdo(PDO $pdo, string $sql, array $arguments = null) {
-    if (!$arguments) {               // If no arguments provided
-        return $pdo->query($sql);    // Execute query directly and return PDOStatement
+    if (!$arguments) { 
+        // No arguments — run the query as-is	
+        return $pdo->query($sql);    
     }
     
-    $statement = $pdo->prepare($sql); // Prepare the SQL statement
-    $statement->execute($arguments);  // Execute with provided arguments
-    return $statement;                // Return PDOStatement object
+	// Use a prepared statement when arguments are passed
+    $statement = $pdo->prepare($sql); 
+    $statement->execute($arguments);  
+    return $statement;                
 }
 
 ?>

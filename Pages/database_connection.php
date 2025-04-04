@@ -1,27 +1,31 @@
 <?php
-$type     = 'mysql';     // Type of database
-$server   = 'localhost'; // Server the database is on
+// Database connection settings
+$type     = 'mysql';     // Database type
+$server   = 'localhost'; // Host where the database is running
 $db       = 'retechx';   // Name of the database
-$port     = '3306';      // Port is usually 8889 in MAMP and 3306 in XAMPP
-$charset  = 'utf8mb4';   // UTF-8 encoding using 4 bytes of data per character
+$port     = '3306';      // Default MySQL port
+$charset  = 'utf8mb4';   // UTF-8 charset with support for emojis and special characters
 
-$username = 'shaillaja';          // Enter YOUR username here
-$password = 'CCwx*PyuGERNBaFL';  // Enter YOUR password here
+// Credentials (This should be replace with own)
+$username = 'swij';          
+$password = 'h8SRFIHHniIb';  
 
-// Options for how PDO works
+// PDO options for secure and consistent behavior
 $options  = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // Throw exceptions on errors
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, // Return results as associative arrays
+    PDO::ATTR_EMULATE_PREPARES   => false, // Use real prepared statements
 ];
 
-// Create DSN
+// Create the Data Source Name (DSN) string
 $dsn = "$type:host=$server;dbname=$db;port=$port;charset=$charset";
 
-try {                                                        // Try following code
-    $pdo = new PDO($dsn, $username, $password, $options);    // Create PDO object
+// Attempt to establish a database connection
+try {                                                        
+    $pdo = new PDO($dsn, $username, $password, $options); // Create the PDO instance
 }
-catch (PDOException $e) {                                    // If exception thrown
-    throw new PDOException($e->getMessage(), $e->getCode()); // Re-throw exception
+catch (PDOException $e) { 
+    // If connection fails, rethrow the exception with details                                   
+    throw new PDOException($e->getMessage(), $e->getCode()); 
 }
 ?>

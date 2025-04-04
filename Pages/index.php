@@ -1,14 +1,14 @@
 <?php
 session_start();
 include 'header.php';
-include 'database_connection.php'; // Assumes this provides $pdo
+include 'database_connection.php'; // Provides the $pdo connection
 
-// Ensure cart session exists
+// Initialize the cart if it doesn't already exist
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-// Fetch latest 6 products using PDO
+// Fetch the 6 most recently listed products from the database
 $sql = "
     SELECT 
         p.product_id,
