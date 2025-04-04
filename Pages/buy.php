@@ -59,7 +59,7 @@ $result = $conn->query($sql);
 
                         <div class="btn-wrapper">
                             <?php if (isset($_SESSION['user_id'])): ?>
-                                <a href="checkout.php?buy_now=<?= $product['product_id'] ?>" class="btn">Buy Now</a>
+                                <a href="checkout.php?product_id=<?= urlencode($product['product_id']) ?>" class="btn">Buy Now</a>
                                 <form method="POST" style="display:inline;">
                                     <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
                                     <button type="submit" name="add_to_cart" class="btn btn-cart">Add to Cart</button>

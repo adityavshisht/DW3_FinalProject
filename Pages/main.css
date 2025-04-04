@@ -115,6 +115,74 @@ main {
     margin-top: 20px;
 }
 
+/* Order History */
+.order-history {
+    margin-top: 30px;
+}
+
+.order-card {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.order-thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 20px;
+}
+
+/* Checkout Styles */
+.checkout-card {
+    background-color: #fff;
+    padding: 30px;
+    max-width: 600px;
+    margin: 30px auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.checkout-image {
+    max-width: 120px !important;
+    max-height: 120px !important;
+    width: 120px !important;
+    height: 120px !important;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto 20px auto;
+}
+
+
+.checkout-form label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.checkout-form input,
+.checkout-form textarea,
+.checkout-form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.checkout-form button {
+    margin-top: 20px;
+    width: 100%;
+}
+
 /* Footer */
 footer {
     background: #333;
@@ -123,6 +191,6 @@ footer {
     padding: 15px;
     margin-top: 50px;
     width: 100%;
-    position: relative; /* change from absolute/fixed */
+    position: relative;
     bottom: 0;
 }
