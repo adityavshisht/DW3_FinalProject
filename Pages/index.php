@@ -1,14 +1,14 @@
 <?php
 session_start();
 include 'header.php';
-include 'database_connection.php';
+include 'database_connection.php'; // Assumes this provides $pdo
 
 // Ensure cart session exists
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-// Fetch latest 6 products
+// Fetch latest 6 products using PDO
 $sql = "
     SELECT 
         p.product_id,
@@ -24,7 +24,9 @@ $sql = "
     ORDER BY p.created_at DESC
     LIMIT 6
 ";
-$result = $conn->query($sql);
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <div class="wrapper">
@@ -42,9 +44,9 @@ $result = $conn->query($sql);
         <?php endif; ?>
 
         <h3 style="margin-top: 40px;">Latest Listings</h3>
-        <?php if ($result && $result->num_rows > 0): ?>
+        <?php if ($products && count($products) > 0): ?>
             <div class="product-grid">
-                <?php while ($product = $result->fetch_assoc()): ?>
+                <?php foreach ($products as $product): ?>
                     <div class="product-card">
                         <img src="<?= (isset($_SERVER['PHP_SELF']) && str_contains($_SERVER['PHP_SELF'], 'Pages')) ? '../imgs/' : 'imgs/' ?><?= htmlspecialchars($product['image']) ?>" alt="Product Image" class="product-image">
                         <h4><?= htmlspecialchars($product['title']) ?></h4>
@@ -60,7 +62,7 @@ $result = $conn->query($sql);
                             <a href="login.php?redirect=cart.php" class="btn btn-cart">Add to Cart</a>
                         <?php endif; ?>
                     </div>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
             </div>
         <?php else: ?>
             <p>No products available yet.</p>

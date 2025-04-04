@@ -1,58 +1,73 @@
 <?php
 session_start();
 include 'header.php';
-include 'database_connection.php';
+include 'database_connection.php'; // Assumes this provides $pdo
 
-// ✅ Ensure user is logged in
+// Ensure user is logged in
 if (!isset($_SESSION['user_id'])) {
     $redirectTo = "checkout.php?product_id=" . urlencode($_GET['product_id'] ?? '');
     header("Location: login.php?redirect=" . $redirectTo);
     exit();
 }
 
-// ✅ Get product_id from GET or POST
+// Get product_id from GET or POST
 $product_id = $_SERVER['REQUEST_METHOD'] === 'POST'
     ? (int)($_POST['product_id'] ?? 0)
     : (int)($_GET['product_id'] ?? 0);
 
-// ✅ Validate product_id
+// Validate product_id
 if (!$product_id) {
     echo "<main><h2>No product selected for checkout.</h2><a href='buy.php' class='btn'>Browse Products</a></main>";
     include 'footer.php';
     exit();
 }
 
-// ✅ Fetch product details
-$stmt = $conn->prepare("SELECT * FROM products WHERE product_id = ?");
-$stmt->bind_param("i", $product_id);
-$stmt->execute();
-$result = $stmt->get_result();
+// Fetch product details using PDO
+try {
+    $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id = :product_id");
+    $stmt->execute([':product_id' => $product_id]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($result->num_rows === 0) {
-    echo "<main><h2>Product not found.</h2><a href='buy.php' class='btn'>Back to Products</a></main>";
+    if (!$product) {
+        echo "<main><h2>Product not found.</h2><a href='buy.php' class='btn'>Back to Products</a></main>";
+        include 'footer.php';
+        exit();
+    }
+} catch (PDOException $e) {
+    // For debugging, you could log: error_log($e->getMessage());
+    echo "<main><h2>Error fetching product details.</h2><a href='buy.php' class='btn'>Back to Products</a></main>";
     include 'footer.php';
     exit();
 }
 
-$product = $result->fetch_assoc();
-
-// ✅ Handle order submission
+// Handle order submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name'], $_POST['email'], $_POST['phone'], $_POST['address'], $_POST['payment_method'])) {
     $buyer_id = $_SESSION['user_id'];
     $seller_id = $product['user_id'];
     $price = $product['price'];
     $payment_status = "Paid";
 
-    $stmt = $conn->prepare("INSERT INTO orders (buyer_id, product_id, seller_id, total_price, payment_status) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("iiids", $buyer_id, $product_id, $seller_id, $price, $payment_status);
-    $stmt->execute();
+    try {
+        $stmt = $pdo->prepare("INSERT INTO orders (buyer_id, product_id, seller_id, total_price, payment_status) VALUES (:buyer_id, :product_id, :seller_id, :total_price, :payment_status)");
+        $stmt->execute([
+            ':buyer_id' => $buyer_id,
+            ':product_id' => $product_id,
+            ':seller_id' => $seller_id,
+            ':total_price' => $price,
+            ':payment_status' => $payment_status
+        ]);
 
-    echo "<script>alert('✅ Order placed successfully!'); window.location.href = 'profile.php';</script>";
-    exit();
+        echo "<script>alert('✅ Order placed successfully!'); window.location.href = 'profile.php';</script>";
+        exit();
+    } catch (PDOException $e) {
+        // For debugging, you could log: error_log($e->getMessage());
+        echo "<script>alert('Error placing order. Please try again.'); window.location.href = 'checkout.php?product_id=$product_id';</script>";
+        exit();
+    }
 }
 ?>
 
-<!-- ✅ Checkout UI -->
+<!-- Checkout UI -->
 <div class="wrapper">
     <main>
         <h2>Checkout</h2>

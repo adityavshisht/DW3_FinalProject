@@ -1,7 +1,7 @@
 <?php
 session_start();
 include 'header.php';
-include 'database_connection.php';
+include 'database_connection.php'; // Assumes this provides $pdo
 
 // Handle Add to Cart functionality
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_to_cart'])) {
@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_to_cart'])) {
     exit();
 }
 
-// Fetch products from DB
+// Fetch products from DB using PDO
 $sql = "
     SELECT 
         p.product_id,
@@ -37,16 +37,25 @@ $sql = "
     ORDER BY p.created_at DESC
 ";
 
-$result = $conn->query($sql);
+try {
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // For debugging, you could log: error_log($e->getMessage());
+    $errorMessage = "Error fetching products. Please try again later.";
+}
 ?>
 
 <div class="wrapper">
     <main>
         <h2>Browse Electronics for Sale</h2>
 
-        <?php if ($result && $result->num_rows > 0): ?>
+        <?php if (isset($errorMessage)): ?>
+            <p style="color: red; text-align:center;"><?= $errorMessage ?></p>
+        <?php elseif (!empty($products)): ?>
             <div class="product-grid">
-                <?php while ($product = $result->fetch_assoc()): ?>
+                <?php foreach ($products as $product): ?>
                     <div class="product-card">
                         <img src="<?= (isset($_SERVER['PHP_SELF']) && str_contains($_SERVER['PHP_SELF'], 'Pages')) ? '../imgs/' : 'imgs/' ?><?= htmlspecialchars($product['image']) ?>" alt="Product Image" class="product-image">
 
@@ -70,7 +79,7 @@ $result = $conn->query($sql);
                             <?php endif; ?>
                         </div>
                     </div>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
             </div>
         <?php else: ?>
             <p>No products available at the moment.</p>

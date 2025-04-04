@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 include 'header.php';
-include 'database_connection.php'; 
+include 'database_connection.php'; // Assumes this provides $pdo
 
 $appointmentConfirmed = false;
 $scheduledDate = '';
@@ -27,20 +27,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $preferred_date = $_POST['preferred_date'];
         $preferred_time = $_POST['preferred_time'];
 
-       
-        $sql = "INSERT INTO seller_info (name, email, phone, address, preferred_date, preferred_time, created_at) 
-                VALUES (?, ?, ?, ?, ?, ?, NOW())";
-        
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssss", $name, $email, $phone, $address, $preferred_date, $preferred_time);
+        try {
+            // Insert into seller_info table
+            $sql = "INSERT INTO seller_info (name, email, phone, address, preferred_date, preferred_time, created_at) 
+                    VALUES (:name, :email, :phone, :address, :preferred_date, :preferred_time, NOW())";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':name' => $name,
+                ':email' => $email,
+                ':phone' => $phone,
+                ':address' => $address,
+                ':preferred_date' => $preferred_date,
+                ':preferred_time' => $preferred_time
+            ]);
 
-        if ($stmt->execute()) {
             $appointmentConfirmed = true;
             $scheduledDate = $preferred_date;
             $scheduledTime = $preferred_time;
-          
-            $seller_id = $conn->insert_id;
+            $seller_id = $pdo->lastInsertId();
 
+            // Determine slot details
             $slot_id = 0;
             switch ($preferred_time) {
                 case '9:00-11:00':
@@ -64,34 +71,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $slot_time = '00:00:00';
             }
 
-            $product_id = 1; 
             $slot_date = $preferred_date;
             $status = 'Confirmed';
 
             if ($slot_id > 0) {
-                $sql_pickup = "INSERT INTO pickup_slots (slot_id, product_id, seller_id, slot_date, slot_time, status) 
-                               VALUES (?, ?, ?, ?, ?, ?)";
-                $stmt_pickup = $conn->prepare($sql_pickup);
-                $stmt_pickup->bind_param("iiisss", $slot_id, $product_id, $seller_id, $slot_date, $slot_time, $status);
-
-                if (!$stmt_pickup->execute()) {
-                    $errorMessage = "Error saving to pickup_slots table. Please try again.";
-                }
-                $stmt_pickup->close();
+                $sql_pickup = "INSERT INTO pickup_slots (slot_id, seller_id, slot_date, slot_time, status) 
+                              VALUES (:slot_id, :seller_id, :slot_date, :slot_time, :status)";
+                
+                $stmt_pickup = $pdo->prepare($sql_pickup);
+                $stmt_pickup->execute([
+                    ':slot_id' => $slot_id,
+                    ':seller_id' => $seller_id,
+                    ':slot_date' => $slot_date,
+                    ':slot_time' => $slot_time,
+                    ':status' => $status
+                ]);
             } else {
                 $errorMessage = "Invalid time slot selected.";
             }
-        } else {
+        } catch (PDOException $e) {
             $errorMessage = "Error scheduling appointment. Please try again.";
+            // For debugging, you could log: error_log($e->getMessage());
         }
-
-        $stmt->close();
     } else {
         $errorMessage = "Please fill out all required fields.";
     }
 }
-
-$conn->close();
 ?>
 
 <div class="container">

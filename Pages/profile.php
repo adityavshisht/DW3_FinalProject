@@ -7,25 +7,29 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 include 'header.php';
-include 'database_connection.php';
+include 'database_connection.php'; // Assumes this provides $pdo
 
 $userId = $_SESSION['user_id'];
 
-// Fetch order history from `orders` table
+// Fetch order history from `orders` table using PDO
 $sql = "
     SELECT 
         o.order_id, o.order_date, o.total_price, o.payment_status,
         p.title, p.image
     FROM orders o
     JOIN products p ON o.product_id = p.product_id
-    WHERE o.buyer_id = ?
+    WHERE o.buyer_id = :userId
     ORDER BY o.order_date DESC
 ";
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userId);
-$stmt->execute();
-$result = $stmt->get_result();
+try {
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':userId' => $userId]);
+    $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // For debugging, you could log: error_log($e->getMessage());
+    $errorMessage = "Error fetching order history. Please try again later.";
+}
 ?>
 
 <main>
@@ -40,9 +44,11 @@ $result = $stmt->get_result();
     <!-- Order History -->
     <h3 style="margin-top: 40px;">Order History</h3>
 
-    <?php if ($result->num_rows > 0): ?>
+    <?php if (isset($errorMessage)): ?>
+        <p style="color: red; text-align:center;"><?= $errorMessage ?></p>
+    <?php elseif (!empty($orders)): ?>
         <div class="order-history">
-            <?php while ($order = $result->fetch_assoc()): ?>
+            <?php foreach ($orders as $order): ?>
                 <div class="order-card">
                     <img src="../imgs/<?= htmlspecialchars($order['image']) ?>" alt="Product" class="order-thumb">
                     <div>
@@ -52,7 +58,7 @@ $result = $stmt->get_result();
                         <p>Status: <?= htmlspecialchars($order['payment_status']) ?></p>
                     </div>
                 </div>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
         </div>
     <?php else: ?>
         <p>No orders found.</p>

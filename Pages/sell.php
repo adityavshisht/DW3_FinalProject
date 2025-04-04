@@ -1,16 +1,12 @@
 <?php
 session_start();
 include 'header.php';
-include 'database_connection.php';
+require 'database_connection.php';  // Assumes $pdo is defined here as a PDO instance
 
-$categories = [];
-$result = $conn->query("SELECT category_id, category_name FROM categories");
-
-if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $categories[] = $row;
-    }
-}
+// Fetch categories using PDO directly
+$sql = "SELECT category_id, category_name FROM categories";
+$statement = $pdo->query($sql); // Use $pdo directly instead of pdo()
+$categories = $statement->fetchAll(PDO::FETCH_ASSOC); // Fetch all rows as an associative array
 ?>
 
 <main>
@@ -26,7 +22,7 @@ if ($result && $result->num_rows > 0) {
         <select name="category_id" id="categorySelect" required>
             <option value="">-- Select Category --</option>
             <?php foreach ($categories as $category): ?>
-                <option value="<?= $category['category_id'] ?>" data-name="<?= $category['category_name'] ?>">
+                <option value="<?= $category['category_id'] ?>" data-name="<?= htmlspecialchars($category['category_name']) ?>">
                     <?= htmlspecialchars($category['category_name']) ?>
                 </option>
             <?php endforeach; ?>
@@ -76,7 +72,6 @@ if ($result && $result->num_rows > 0) {
                 targetPage = 'sell_accessories_form.php';
                 break;
         }
-
 
         this.action = targetPage;
         this.submit();

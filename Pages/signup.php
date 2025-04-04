@@ -1,12 +1,25 @@
 <?php
 session_start();
 include 'header.php';
+
+// Check for redirect parameter (optional, for consistency with login/checkout)
+$redirect = $_GET['redirect'] ?? '';
 ?>
 
 <div class="wrapper">
     <main>
         <h2>Sign Up</h2>
+
+        <?php if (isset($_SESSION['signup_error'])): ?>
+            <p style="color: red; text-align:center;"><?= htmlspecialchars($_SESSION['signup_error']) ?></p>
+            <?php unset($_SESSION['signup_error']); // Clear the error after displaying ?>
+        <?php endif; ?>
+
         <form action="signup_process.php" method="post">
+            <?php if ($redirect): ?>
+                <input type="hidden" name="redirect" value="<?= htmlspecialchars($redirect) ?>">
+            <?php endif; ?>
+
             <label>Username:</label>
             <input type="text" name="username" required>
 
@@ -18,6 +31,8 @@ include 'header.php';
 
             <button type="submit" class="btn">Sign Up</button>
         </form>
+
+        <p style="text-align:center; margin-top: 20px;">Already have an account? <a href="login.php<?php if ($redirect) echo '?redirect=' . urlencode($redirect); ?>">Log In</a></p>
     </main>
 </div>
 

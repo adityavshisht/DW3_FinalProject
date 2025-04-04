@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 28, 2025 at 05:39 PM
+-- Generation Time: Apr 04, 2025 at 06:36 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -68,7 +68,9 @@ CREATE TABLE `orders` (
 
 INSERT INTO `orders` (`order_id`, `buyer_id`, `product_id`, `seller_id`, `order_date`, `total_price`, `payment_status`, `delivery_status`) VALUES
 (1, 2, 1, 1, '2025-03-27 20:32:07', 499.99, 'Paid', 'Delivered'),
-(2, 1, 2, 2, '2025-03-27 20:32:07', 899.00, 'Pending', 'Shipped');
+(2, 1, 2, 2, '2025-03-27 20:32:07', 899.00, 'Pending', 'Shipped'),
+(3, 6, 2, 2, '2025-04-04 00:12:24', 899.00, 'Paid', NULL),
+(4, 7, 2, 2, '2025-04-04 00:23:10', 899.00, 'Paid', NULL);
 
 -- --------------------------------------------------------
 
@@ -97,7 +99,28 @@ INSERT INTO `payments` (`payment_id`, `order_id`, `buyer_id`, `payment_method`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pickup_slots`
 --
+
+CREATE TABLE `pickup_slots` (
+  `slot_id` int(11) DEFAULT NULL,
+  `seller_id` int(11) DEFAULT NULL,
+  `slot_date` date DEFAULT NULL,
+  `slot_time` time DEFAULT NULL,
+  `status` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `pickup_slots`
+--
+
+INSERT INTO `pickup_slots` (`slot_id`, `seller_id`, `slot_date`, `slot_time`, `status`) VALUES
+(2, 1, '2025-04-17', '10:30:00', 'Confirmed'),
+(3, 2, '2025-04-15', '13:00:00', 'Confirmed'),
+(1, 3, '2025-04-14', '14:00:00', 'Confirmed'),
+(4, 4, '2025-04-22', '15:00:00', 'Confirmed'),
+(1, 5, '2025-04-13', '14:00:00', 'Confirmed'),
+(3, 6, '2025-04-16', '13:00:00', 'Confirmed');
 
 -- --------------------------------------------------------
 
@@ -156,6 +179,35 @@ INSERT INTO `reviews` (`review_id`, `user_id`, `product_id`, `rating`, `comment`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `seller_info`
+--
+
+CREATE TABLE `seller_info` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `address` text NOT NULL,
+  `preferred_date` date NOT NULL,
+  `preferred_time` varchar(50) NOT NULL,
+  `created_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `seller_info`
+--
+
+INSERT INTO `seller_info` (`id`, `name`, `email`, `phone`, `address`, `preferred_date`, `preferred_time`, `created_at`) VALUES
+(1, 'Shaillaja Ravi', 'shai@gmail.com', '5023456788', '2175 Blvd de Maisonneuve ouest\r\n701', '2025-04-17', '11:00-13:00', '2025-04-03 22:46:36'),
+(2, 'Aditya Sharma', 'aditya@yahoo.ca', '2345678766', '213,2125\r\nRUE SAINT MARC', '2025-04-15', '13:00-15:00', '2025-04-03 22:50:05'),
+(3, 'Kishore S', 'kishore21@gmail.com', '2345678908', '345,OldPort', '2025-04-14', '9:00-11:00', '2025-04-03 23:51:36'),
+(4, 'Srikar S', 'sri@hotmail.com', '4356789090', '234, Blvd Parc', '2025-04-22', '15:00-17:00', '2025-04-03 23:58:02'),
+(5, 'Riya Manoj', 'riyamanoj@yahoo.com', '5064356789', '515, Sherbrooke', '2025-04-13', '9:00-11:00', '2025-04-04 00:07:20'),
+(6, 'Aditya Sharma', 'aditya01@hotmail.com', '5064537890', '320, Oldport', '2025-04-16', '13:00-15:00', '2025-04-04 00:21:14');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -174,11 +226,13 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `name`, `email`, `password`, `phone`, `address`, `user_type`) VALUES
-(1, 'Alice Smith', 'alice@example.com', '$2y$10$YQdD5pnAKk5zKP5DKy0rju6rnxJ3SjoqRBhKaTaJTbzPYEO3zWV2K', '123-456-7890', '123 Maple St', 'user'),
+(1, 'Shaillaja Ravi', 'shai@gmail.com', '$2y$10$YQdD5pnAKk5zKP5DKy0rju6rnxJ3SjoqRBhKaTaJTbzPYEO3zWV2K', '123-456-7890', '123 Maple St', 'user'),
 (2, 'Bob Johnson', 'bob@example.com', '$2y$10$z48NO/cHQfbM8IfNaawU7OZ/xpvhfXpcZZ4jcOq3DCIu1TPxUDivS', '987-654-3210', '456 Oak Ave', 'user'),
 (3, 'Admin User', 'admin@example.com', '$2y$10$3fbgN0/jn4Hryzi8VDFUVu4vWXPGThTefb9FDzUYa9kgPZKPlqH0e', '111-222-3333', '789 Admin Blvd', 'admin'),
 (4, 'adi@proj25', 'adi@proj25', 'YzGUT0CRE8se0WDNgnXGesypMT39YUm', NULL, NULL, 'user'),
-(5, 'harman@proj25', 'harman@proj25', '$2y$10$fGJPO56UI2KPsHZ3pW0Hg.YzGUT0CRE8se0WDNgnXGesypMT39YUm', NULL, NULL, 'user');
+(5, 'harman@proj25', 'harman@proj25', '$2y$10$fGJPO56UI2KPsHZ3pW0Hg.YzGUT0CRE8se0WDNgnXGesypMT39YUm', NULL, NULL, 'user'),
+(6, 'Riya M', 'riyamanoj@yahoo.com', '$2y$10$Ff5gv3tGRh8GZOdy8fuAPeoPxu3nI/lDj//ZuQwNnEKIUhqkVAFze', NULL, NULL, 'user'),
+(7, 'Aditya Sharma', 'aditya01@hotmail.com', '$2y$10$Zv35XXxVaP315lHsAS5kf.MAi3jt3nVeUFgBlS9JBOnGd/djMcUGq', NULL, NULL, 'user');
 
 --
 -- Indexes for dumped tables
@@ -209,6 +263,9 @@ ALTER TABLE `payments`
 
 --
 -- Indexes for table `pickup_slots`
+--
+ALTER TABLE `pickup_slots`
+  ADD KEY `seller_id` (`seller_id`);
 
 --
 -- Indexes for table `products`
@@ -225,6 +282,12 @@ ALTER TABLE `reviews`
   ADD PRIMARY KEY (`review_id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `seller_info`
+--
+ALTER TABLE `seller_info`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `users`
@@ -247,15 +310,13 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
   MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -270,10 +331,16 @@ ALTER TABLE `reviews`
   MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `seller_info`
+--
+ALTER TABLE `seller_info`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
@@ -295,6 +362,12 @@ ALTER TABLE `payments`
   ADD CONSTRAINT `payments_ibfk_2` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`user_id`);
 
 --
+-- Constraints for table `pickup_slots`
+--
+ALTER TABLE `pickup_slots`
+  ADD CONSTRAINT `pickup_slots_ibfk_1` FOREIGN KEY (`seller_id`) REFERENCES `seller_info` (`id`);
+
+--
 -- Constraints for table `products`
 --
 ALTER TABLE `products`
@@ -312,27 +385,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
--- Merged Queries --
-
-CREATE TABLE seller_info (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    address TEXT NOT NULL,
-    preferred_date DATE NOT NULL,
-    preferred_time VARCHAR(50) NOT NULL,
-    created_at DATETIME NOT NULL
-);
-
-CREATE TABLE pickup_slots (
-    slot_id INT,
-    product_id INT,
-    seller_id INT,
-    slot_date DATE,
-    slot_time TIME,
-    status VARCHAR(20),
-    FOREIGN KEY (seller_id) REFERENCES seller_info(id)
-);
