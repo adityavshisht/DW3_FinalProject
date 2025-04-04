@@ -2,7 +2,7 @@
 session_start();
 include 'header.php';
 
-// Check for redirect parameter (optional, for consistency with login/checkout)
+// Capture optional redirect parameter (from login / checkout pages)
 $redirect = $_GET['redirect'] ?? '';
 ?>
 
@@ -12,7 +12,7 @@ $redirect = $_GET['redirect'] ?? '';
 
         <?php if (isset($_SESSION['signup_error'])): ?>
             <p style="color: red; text-align:center;"><?= htmlspecialchars($_SESSION['signup_error']) ?></p>
-            <?php unset($_SESSION['signup_error']); // Clear the error after displaying ?>
+            <?php unset($_SESSION['signup_error']); // Remove the error after showing it ?>
         <?php endif; ?>
 
         <form action="signup_process.php" method="post">
