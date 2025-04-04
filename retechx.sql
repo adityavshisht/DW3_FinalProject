@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `categories`
+-- Table: categories
 --
 
 CREATE TABLE `categories` (
@@ -33,7 +33,7 @@ CREATE TABLE `categories` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `categories`
+-- Dumping data for table categories
 --
 
 INSERT INTO `categories` (`category_id`, `category_name`) VALUES
@@ -48,7 +48,7 @@ INSERT INTO `categories` (`category_id`, `category_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orders`
+-- Table: orders
 --
 
 CREATE TABLE `orders` (
@@ -63,7 +63,7 @@ CREATE TABLE `orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `orders`
+-- Dumping data for table orders
 --
 
 INSERT INTO `orders` (`order_id`, `buyer_id`, `product_id`, `seller_id`, `order_date`, `total_price`, `payment_status`, `delivery_status`) VALUES
@@ -75,7 +75,7 @@ INSERT INTO `orders` (`order_id`, `buyer_id`, `product_id`, `seller_id`, `order_
 -- --------------------------------------------------------
 
 --
--- Table structure for table `payments`
+-- Table: payments
 --
 
 CREATE TABLE `payments` (
@@ -89,7 +89,7 @@ CREATE TABLE `payments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `payments`
+-- Dumping data for table payments
 --
 
 INSERT INTO `payments` (`payment_id`, `order_id`, `buyer_id`, `payment_method`, `transaction_id`, `payment_date`, `payment_status`) VALUES
@@ -99,7 +99,7 @@ INSERT INTO `payments` (`payment_id`, `order_id`, `buyer_id`, `payment_method`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pickup_slots`
+-- Table: pickup_slots
 --
 
 CREATE TABLE `pickup_slots` (
@@ -111,7 +111,7 @@ CREATE TABLE `pickup_slots` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `pickup_slots`
+-- Dumping data for table pickup_slots
 --
 
 INSERT INTO `pickup_slots` (`slot_id`, `seller_id`, `slot_date`, `slot_time`, `status`) VALUES
@@ -125,7 +125,7 @@ INSERT INTO `pickup_slots` (`slot_id`, `seller_id`, `slot_date`, `slot_time`, `s
 -- --------------------------------------------------------
 
 --
--- Table structure for table `products`
+-- Table: products
 --
 
 CREATE TABLE `products` (
@@ -144,7 +144,7 @@ CREATE TABLE `products` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `products`
+-- Dumping data for table products
 --
 
 INSERT INTO `products` (`product_id`, `user_id`, `category_id`, `title`, `brand`, `model`, `specifications`, `condition`, `price`, `status`, `created_at`, `image`) VALUES
@@ -155,7 +155,7 @@ INSERT INTO `products` (`product_id`, `user_id`, `category_id`, `title`, `brand`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `reviews`
+-- Table: reviews
 --
 
 CREATE TABLE `reviews` (
@@ -168,7 +168,7 @@ CREATE TABLE `reviews` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `reviews`
+-- Dumping data for table reviews
 --
 
 INSERT INTO `reviews` (`review_id`, `user_id`, `product_id`, `rating`, `comment`, `created_at`) VALUES
@@ -179,7 +179,7 @@ INSERT INTO `reviews` (`review_id`, `user_id`, `product_id`, `rating`, `comment`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `seller_info`
+-- Table: seller_info
 --
 
 CREATE TABLE `seller_info` (
@@ -194,7 +194,7 @@ CREATE TABLE `seller_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `seller_info`
+-- Dumping data for table seller_info
 --
 
 INSERT INTO `seller_info` (`id`, `name`, `email`, `phone`, `address`, `preferred_date`, `preferred_time`, `created_at`) VALUES
@@ -208,7 +208,7 @@ INSERT INTO `seller_info` (`id`, `name`, `email`, `phone`, `address`, `preferred
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Table: users
 --
 
 CREATE TABLE `users` (
@@ -222,7 +222,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table users
 --
 
 INSERT INTO `users` (`user_id`, `name`, `email`, `password`, `phone`, `address`, `user_type`) VALUES
@@ -232,20 +232,21 @@ INSERT INTO `users` (`user_id`, `name`, `email`, `password`, `phone`, `address`,
 (4, 'adi@proj25', 'adi@proj25', 'YzGUT0CRE8se0WDNgnXGesypMT39YUm', NULL, NULL, 'user'),
 (5, 'harman@proj25', 'harman@proj25', '$2y$10$fGJPO56UI2KPsHZ3pW0Hg.YzGUT0CRE8se0WDNgnXGesypMT39YUm', NULL, NULL, 'user'),
 (6, 'Riya M', 'riyamanoj@yahoo.com', '$2y$10$Ff5gv3tGRh8GZOdy8fuAPeoPxu3nI/lDj//ZuQwNnEKIUhqkVAFze', NULL, NULL, 'user'),
-(7, 'Aditya Sharma', 'aditya01@hotmail.com', '$2y$10$Zv35XXxVaP315lHsAS5kf.MAi3jt3nVeUFgBlS9JBOnGd/djMcUGq', NULL, NULL, 'user');
+(7, 'Aditya Sharma', 'aditya01@hotmail.com', '$2y$10$Zv35XXxVaP315lHsAS5kf.MAi3jt3nVeUFgBlS9JBOnGd/djMcUGq', NULL, NULL, 'user'),
+(8, 'Sankini', 'sankini@gmail.com', '$2y$10$RqhPQy6AmF0KVzpyfOQ81.29JLPtJkIpp00XXhD48aUd5a7ZCzBWu', NULL, NULL, 'user');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `categories`
+-- Indexes for table categories
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`category_id`);
 
 --
--- Indexes for table `orders`
+-- Indexes for table orders
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_id`),
@@ -254,7 +255,7 @@ ALTER TABLE `orders`
   ADD KEY `seller_id` (`seller_id`);
 
 --
--- Indexes for table `payments`
+-- Indexes for table payments
 --
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`payment_id`),
@@ -262,13 +263,13 @@ ALTER TABLE `payments`
   ADD KEY `buyer_id` (`buyer_id`);
 
 --
--- Indexes for table `pickup_slots`
+-- Indexes for table pickup_slots
 --
 ALTER TABLE `pickup_slots`
   ADD KEY `seller_id` (`seller_id`);
 
 --
--- Indexes for table `products`
+-- Indexes for table products
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`product_id`),
@@ -276,7 +277,7 @@ ALTER TABLE `products`
   ADD KEY `category_id` (`category_id`);
 
 --
--- Indexes for table `reviews`
+-- Indexes for table reviews
 --
 ALTER TABLE `reviews`
   ADD PRIMARY KEY (`review_id`),
@@ -284,13 +285,13 @@ ALTER TABLE `reviews`
   ADD KEY `product_id` (`product_id`);
 
 --
--- Indexes for table `seller_info`
+-- Indexes for table seller_info
 --
 ALTER TABLE `seller_info`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `users`
+-- Indexes for table users
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
@@ -301,43 +302,43 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `categories`
+-- AUTO_INCREMENT for table categories
 --
 ALTER TABLE `categories`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- AUTO_INCREMENT for table orders
 --
 ALTER TABLE `orders`
   MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `payments`
+-- AUTO_INCREMENT for table payments
 --
 ALTER TABLE `payments`
   MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `products`
+-- AUTO_INCREMENT for table products
 --
 ALTER TABLE `products`
   MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `reviews`
+-- AUTO_INCREMENT for table reviews
 --
 ALTER TABLE `reviews`
   MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `seller_info`
+-- AUTO_INCREMENT for table seller_info
 --
 ALTER TABLE `seller_info`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT for table users
 --
 ALTER TABLE `users`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
@@ -347,7 +348,7 @@ ALTER TABLE `users`
 --
 
 --
--- Constraints for table `orders`
+-- Constraints for table orders
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`user_id`),
@@ -355,27 +356,27 @@ ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ibfk_3` FOREIGN KEY (`seller_id`) REFERENCES `users` (`user_id`);
 
 --
--- Constraints for table `payments`
+-- Constraints for table payments
 --
 ALTER TABLE `payments`
   ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
   ADD CONSTRAINT `payments_ibfk_2` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`user_id`);
 
 --
--- Constraints for table `pickup_slots`
+-- Constraints for table pickup_slots
 --
 ALTER TABLE `pickup_slots`
   ADD CONSTRAINT `pickup_slots_ibfk_1` FOREIGN KEY (`seller_id`) REFERENCES `seller_info` (`id`);
 
 --
--- Constraints for table `products`
+-- Constraints for table products
 --
 ALTER TABLE `products`
   ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `products_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`);
 
 --
--- Constraints for table `reviews`
+-- Constraints for table reviews
 --
 ALTER TABLE `reviews`
   ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
