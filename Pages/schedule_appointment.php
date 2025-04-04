@@ -1,17 +1,21 @@
 <?php
+// Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 include 'header.php';
-include 'database_connection.php'; // Assumes this provides $pdo
+include 'database_connection.php'; // Provides $pdo connection
 
+// Initialize variables
 $appointmentConfirmed = false;
 $scheduledDate = '';
 $scheduledTime = '';
 $errorMessage = '';
 
+// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	// Validate all required fields are filled
     if (
         !empty($_POST['name']) &&
         !empty($_POST['email']) &&
@@ -20,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         !empty($_POST['preferred_date']) &&
         !empty($_POST['preferred_time'])
     ) {
+		// Sanitize inputs
         $name = htmlspecialchars($_POST['name']);
         $email = htmlspecialchars($_POST['email']);
         $phone = htmlspecialchars($_POST['phone']);
@@ -28,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $preferred_time = $_POST['preferred_time'];
 
         try {
-            // Insert into seller_info table
+            // Insert seller info into the database
             $sql = "INSERT INTO seller_info (name, email, phone, address, preferred_date, preferred_time, created_at) 
                     VALUES (:name, :email, :phone, :address, :preferred_date, :preferred_time, NOW())";
             
@@ -41,13 +46,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':preferred_date' => $preferred_date,
                 ':preferred_time' => $preferred_time
             ]);
-
+			
+            // Set confirmation flag and store submitted date/time
             $appointmentConfirmed = true;
             $scheduledDate = $preferred_date;
             $scheduledTime = $preferred_time;
             $seller_id = $pdo->lastInsertId();
 
-            // Determine slot details
+            // Assign internal slot ID and actual time value
             $slot_id = 0;
             switch ($preferred_time) {
                 case '9:00-11:00':
@@ -74,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $slot_date = $preferred_date;
             $status = 'Confirmed';
 
+            // Insert slot booking if time slot is valid
             if ($slot_id > 0) {
                 $sql_pickup = "INSERT INTO pickup_slots (slot_id, seller_id, slot_date, slot_time, status) 
                               VALUES (:slot_id, :seller_id, :slot_date, :slot_time, :status)";
@@ -90,8 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errorMessage = "Invalid time slot selected.";
             }
         } catch (PDOException $e) {
+			// Optional: error_log($e->getMessage());
             $errorMessage = "Error scheduling appointment. Please try again.";
-            // For debugging, you could log: error_log($e->getMessage());
         }
     } else {
         $errorMessage = "Please fill out all required fields.";
@@ -103,17 +110,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h2>Schedule Your Appointment</h2>
     <p>Please provide your details for our technician to visit and inspect your item.</p>
 
-    <?php if (!empty($errorMessage)): ?>
+    <!-- Display error messages -->
+	<?php if (!empty($errorMessage)): ?>
         <p style="color: red; text-align:center;"><?php echo $errorMessage; ?></p>
     <?php endif; ?>
 
-    <?php if ($appointmentConfirmed): ?>
+    <!-- If confirmed, show success and redirect -->
+	<?php if ($appointmentConfirmed): ?>
         <script>
             setTimeout(function() {
                 alert("Appointment scheduled for <?= htmlspecialchars($scheduledDate) ?> at <?= htmlspecialchars($scheduledTime) ?>.");
                 window.location.href = "index.php";
             }, 100);
         </script>
+		
+	<!-- Appointment form -->	
     <?php else: ?>
         <form method="POST" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>">
             <label>Full Name:</label>

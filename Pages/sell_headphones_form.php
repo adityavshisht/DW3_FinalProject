@@ -1,9 +1,11 @@
 <?php
 session_start();
 
+// Handle form submission for headphone
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['audio_quality'])) {
 
-    $_SESSION['headphones_condition'] = [
+    // Save responses to session
+	$_SESSION['headphones_condition'] = [
         'audio_quality' => $_POST['audio_quality'],
         'mic_working' => $_POST['mic_working'],
         'earpad_condition' => $_POST['earpad_condition'],
@@ -11,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['audio_quality'])) {
         'has_box' => $_POST['has_box']
     ];
     
+	// Gather answers for condition evaluation
     $answers = [
         $_POST['audio_quality'],
         $_POST['mic_working'],
@@ -20,12 +23,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['audio_quality'])) {
     ];
     
     $total_questions = 5;
-    $no_count = count(array_filter($answers, function($answer) {
+    
+	// Count how many answers indicate a problem 
+	$no_count = count(array_filter($answers, function($answer) {
         return $answer === 'No';
     }));
+	
     $no_percentage = ($no_count / $total_questions) * 100;
 
-    if ($no_percentage > 75) {
+    // Generate condition message based on "No" answers
+	if ($no_percentage > 75) {
         $condition_message = "The condition of your headphones is not good enough, and the estimated price may be very low.";
     } elseif ($no_percentage > 50) {
         $condition_message = "The condition of your headphones is good, and the price will be moderate.";
@@ -35,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['audio_quality'])) {
         $condition_message = "Your headphones are in fair condition.";
     }
     
+	// Store message and return JSON response
     $_SESSION['condition_message'] = $condition_message;
     
     header('Content-Type: application/json');

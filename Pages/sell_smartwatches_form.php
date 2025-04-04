@@ -1,8 +1,10 @@
 <?php
 session_start();
 
+// Handle form submission for smartwatch condition
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['working_display'])) {
     
+	// Save user responses to session
     $_SESSION['smartwatch_condition'] = [
         'working_display' => $_POST['working_display'],
         'battery_health' => $_POST['battery_health'],
@@ -11,22 +13,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['working_display'])) {
         'water_damage' => $_POST['water_damage']
     ];
     
-    
+    // Transform answers for scoring
     $answers = [
         $_POST['working_display'],
         $_POST['battery_health'],
         $_POST['strap_condition'],
         $_POST['has_charger'],
-        $_POST['water_damage'] === 'Yes' ? 'No' : 'Yes' 
+        $_POST['water_damage'] === 'Yes' ? 'No' : 'Yes' // 'Yes' to water damage is treated as a negative
     ];
     
     $total_questions = 5;
+	
+	// Count the number of negative ("No") answers
     $no_count = count(array_filter($answers, function($answer) {
         return $answer === 'No';
     }));
+	
     $no_percentage = ($no_count / $total_questions) * 100;
     
-    
+    // Determine message based on condition score
     if ($no_percentage > 75) {
         $condition_message = "The condition of your smartwatch is not good enough, and the estimated price may be very low.";
     } elseif ($no_percentage > 50) {
@@ -37,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['working_display'])) {
         $condition_message = "Your smartwatch is in fair condition.";
     }
     
+	// Store result and respond with JSON
     $_SESSION['condition_message'] = $condition_message;
     
     

@@ -1,8 +1,10 @@
 <?php
 session_start();
 
+// Handle laptop condition form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['turns_on'])) {
     
+	// Store the user's responses in the session
     $_SESSION['laptop_condition'] = [
         'turns_on' => $_POST['turns_on'],
         'screen_condition' => $_POST['screen_condition'],
@@ -13,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['turns_on'])) {
         'warranty' => $_POST['warranty']
     ];
     
-   
+    // Collect answers for condition evaluation
     $answers = [
         $_POST['turns_on'],
         $_POST['screen_condition'],
@@ -25,11 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['turns_on'])) {
     ];
     
     $total_questions = 7;
+	
+	// Count how many answers were marked "No"
     $no_count = count(array_filter($answers, function($answer) {
         return $answer === 'No';
     }));
+	
     $no_percentage = ($no_count / $total_questions) * 100;
     
+	// Generate the condition message based on the score
     if ($no_percentage > 75) {
         $condition_message = "The condition of your laptop is not good enough, and the estimated price may be very low.";
     } elseif ($no_percentage > 50) {
@@ -40,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['turns_on'])) {
         $condition_message = "Your laptop is in fair condition.";
     }
     
+	// Save the message to session and return JSON response
     $_SESSION['condition_message'] = $condition_message;
     
  

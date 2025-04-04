@@ -1,8 +1,10 @@
 <?php
 session_start();
 
+// Handle form submission for accessory condition
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fully_functional'])) {
-   
+    
+	 // Store responses in session
     $_SESSION['accessories_condition'] = [
         'fully_functional' => $_POST['fully_functional'],
         'cables_included' => $_POST['cables_included'],
@@ -10,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fully_functional'])) 
         'original_box' => $_POST['original_box']
     ];
     
-   
+    // Convert answers to negatives for condition scoring
     $answers = [
         $_POST['fully_functional'] === 'No' ? 1 : 0,  
         $_POST['cables_included'] === 'No' ? 1 : 0,   
@@ -22,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fully_functional'])) 
     $negative_count = array_sum($answers);
     $negative_percentage = ($negative_count / $total_questions) * 100;
     
-    
+    // Determine the condition message based on negative answers
     if ($negative_percentage > 75) {
         $condition_message = "The condition of your accessories is not good enough, and the estimated price may be very low.";
     } elseif ($negative_percentage > 50) {
@@ -33,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fully_functional'])) 
         $condition_message = "Your accessories are in fair condition.";
     }
     
+	// Store the condition message in session and return response
     $_SESSION['condition_message'] = $condition_message;
     
    
@@ -91,6 +94,7 @@ include 'header.php';
 </div>
 
 <script>
+// Handle form submission using Fetch API
 document.getElementById('accessoryForm').addEventListener('submit', function(e) {
     e.preventDefault();
     

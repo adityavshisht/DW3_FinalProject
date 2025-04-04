@@ -4,25 +4,29 @@
   require 'functions.php';
   require 'sessions.php';
 
-  // Check if already logged in
+  // Redirect if the user is already logged in
   if ($logged_in) {
     header('Location: account.php');
     exit;
   }
 
-  // Handle redirect parameter
+  // Handle redirect destination after login
   $redirect = $_GET['redirect'] ?? 'index.php';
+  
+  // If there's a product ID to preserve in redirect, append it
   if (isset($_GET['id'])) {
     $redirect .= '?id=' . htmlspecialchars($_GET['id']);
   }
 
   $errors = [];
-
+  
+  // Handle form submission
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
     $redirectPage = $_POST['redirect'] ?? 'index.php';
 
+    // Fetch the user by email
     $sql = "SELECT 
         user_id, 
         name AS forename, 
@@ -37,13 +41,15 @@
     if (!$user) {
       $errors['message'] = 'No user with this email can be found!';
     } else {
+	  // Verify the password
       if (password_verify($password, $user['password'])) {
         login($user); // Using the login function from sessions.php
         $_SESSION['user_id'] = $user['user_id'];    // Adding your custom session variables
         $_SESSION['username'] = $user['forename'];  // Mapping name to forename
         $_SESSION['user_type'] = $user['user_type'];
         
-        header("Location: $redirectPage");
+        // Redirect to the originally intended page
+		header("Location: $redirectPage");
         exit;
       } else {
         $errors['message'] = 'Invalid email or password!';

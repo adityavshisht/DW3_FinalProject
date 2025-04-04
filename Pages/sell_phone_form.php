@@ -1,10 +1,10 @@
 <?php
-
-
 session_start();
 
+// Handle form submission for phone condition assessment
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calls'])) {
    
+    // Store responses in session for later use
     $_SESSION['phone_condition'] = [
         'calls' => $_POST['calls'],
         'touchscreen' => $_POST['touchscreen'],
@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calls'])) {
         'bill' => $_POST['bill']
     ];
     
+	// Collect answers to evaluate condition
     $answers = [
         $_POST['calls'],
         $_POST['touchscreen'],
@@ -22,12 +23,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calls'])) {
     ];
     
     $total_questions = 5;
+	
+	// Count how many responses are negative
     $no_count = count(array_filter($answers, function($answer) {
         return $answer === 'No';
     }));
+	
     $no_percentage = ($no_count / $total_questions) * 100;
     
-    
+    // Generate condition feedback based on the user's answers
     if ($no_percentage > 75) {
         $condition_message = "The condition of your device is not good enough, and the estimated price may be very low.";
     } elseif ($no_percentage > 50) {
@@ -38,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calls'])) {
         $condition_message = "Your device is in fair condition.";
     }
     
+	// Save the message and respond with JSON
     $_SESSION['condition_message'] = $condition_message;
     
  

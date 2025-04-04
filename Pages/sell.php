@@ -1,19 +1,22 @@
 <?php
 session_start();
 include 'header.php';
-require 'database_connection.php';  // Assumes $pdo is defined here as a PDO instance
+require 'database_connection.php';  // Provides the $pdo database connection
 
-// Fetch categories using PDO directly
+// Fetch all categories from the database
 $sql = "SELECT category_id, category_name FROM categories";
-$statement = $pdo->query($sql); // Use $pdo directly instead of pdo()
-$categories = $statement->fetchAll(PDO::FETCH_ASSOC); // Fetch all rows as an associative array
+$statement = $pdo->query($sql); 
+$categories = $statement->fetchAll(PDO::FETCH_ASSOC); // Get categories as associative array
 ?>
 
 <main>
 <?php if (!isset($_SESSION['user_id'])): ?>
+    <!-- Show a message if user is not logged in -->
     <p style="color: red;">You're not logged in. Please <a href="login.php">login</a> to sell your product.</p>
 <?php else: ?>
     <h2>Sell Your Electronic Device</h2>
+	
+	<!-- Product submission form -->
     <form id="sellForm" method="post">
         <label>Product Name:</label>
         <input type="text" name="product_name" required>
@@ -41,6 +44,7 @@ $categories = $statement->fetchAll(PDO::FETCH_ASSOC); // Fetch all rows as an as
 
 <?php if (isset($_SESSION['user_id'])): ?>
 <script>
+    // Dynamically redirect the form based on selected category
     document.getElementById('sellForm').addEventListener('submit', function(e) {
         e.preventDefault(); 
 

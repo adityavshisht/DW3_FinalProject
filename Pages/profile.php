@@ -1,17 +1,18 @@
 <?php
 session_start();
 
+// Redirect to login if user is not authenticated
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
 
 include 'header.php';
-include 'database_connection.php'; // Assumes this provides $pdo
+include 'database_connection.php'; // Provides the $pdo connection
 
 $userId = $_SESSION['user_id'];
 
-// Fetch order history from `orders` table using PDO
+// Fetch the logged-in user's order history
 $sql = "
     SELECT 
         o.order_id, o.order_date, o.total_price, o.payment_status,
@@ -27,7 +28,8 @@ try {
     $stmt->execute([':userId' => $userId]);
     $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    // For debugging, you could log: error_log($e->getMessage());
+	// Optional: log the error for debugging
+    // error_log($e->getMessage());
     $errorMessage = "Error fetching order history. Please try again later.";
 }
 ?>
