@@ -29,7 +29,7 @@ Search Bar – Allows users to find specific products.
 Category Selection
 Users can choose from various categories, including:
 
-Phones
+ Phones
 Laptops
 Tablets
 Smartwatches
