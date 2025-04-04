@@ -1,27 +1,30 @@
 <?php
 session_start();
 include 'header.php';
-include 'database_connection.php'; // Assumes this provides $pdo
+include 'database_connection.php'; // Provides $pdo connection
 
-// Handle Add to Cart functionality
+// Handle "Add to Cart" form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_to_cart'])) {
     $product_id = $_POST['product_id'];
     
-    if (!isset($_SESSION['cart'])) {
+    // Initialize cart if it doesn't exist
+	if (!isset($_SESSION['cart'])) {
         $_SESSION['cart'] = [];
     }
     
+	// Add product to cart or increase its quantity
     if (!isset($_SESSION['cart'][$product_id])) {
-        $_SESSION['cart'][$product_id] = 1; // Default quantity = 1
+        $_SESSION['cart'][$product_id] = 1; // Start with quantity = 1
     } else {
         $_SESSION['cart'][$product_id] += 1;
     }
     
+	// Redirect to the cart page after adding an item
     header("Location: cart.php");
     exit();
 }
 
-// Fetch products from DB using PDO
+// Query to fetch all products with category info
 $sql = "
     SELECT 
         p.product_id,
@@ -42,7 +45,7 @@ try {
     $stmt->execute();
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    // For debugging, you could log: error_log($e->getMessage());
+     // Optional: log error with error_log($e->getMessage());
     $errorMessage = "Error fetching products. Please try again later.";
 }
 ?>
