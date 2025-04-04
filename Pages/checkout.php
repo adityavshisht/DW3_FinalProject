@@ -3,75 +3,69 @@ session_start();
 include 'header.php';
 include 'database_connection.php';
 
+// ✅ Ensure user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php?redirect=checkout.php");
+    $redirectTo = "checkout.php?product_id=" . urlencode($_GET['product_id'] ?? '');
+    header("Location: login.php?redirect=" . $redirectTo);
     exit();
 }
 
-// Make sure cart exists
-if (empty($_SESSION['cart'])) {
-    echo "<main><h2>Your cart is empty.</h2><a href='buy.php' class='btn'>Browse Products</a></main>";
+// ✅ Get product_id from GET or POST
+$product_id = $_SERVER['REQUEST_METHOD'] === 'POST'
+    ? (int)($_POST['product_id'] ?? 0)
+    : (int)($_GET['product_id'] ?? 0);
+
+// ✅ Validate product_id
+if (!$product_id) {
+    echo "<main><h2>No product selected for checkout.</h2><a href='buy.php' class='btn'>Browse Products</a></main>";
     include 'footer.php';
     exit();
 }
 
-// Get products from database
-$product_ids = implode(",", array_keys($_SESSION['cart']));
-$sql = "SELECT * FROM products WHERE product_id IN ($product_ids)";
-$result = $conn->query($sql);
-$products = [];
-$total = 0;
+// ✅ Fetch product details
+$stmt = $conn->prepare("SELECT * FROM products WHERE product_id = ?");
+$stmt->bind_param("i", $product_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-while ($row = $result->fetch_assoc()) {
-    $row['quantity'] = $_SESSION['cart'][$row['product_id']];
-    $total += $row['price'] * $row['quantity'];
-    $products[] = $row;
+if ($result->num_rows === 0) {
+    echo "<main><h2>Product not found.</h2><a href='buy.php' class='btn'>Back to Products</a></main>";
+    include 'footer.php';
+    exit();
 }
 
-// Handle checkout form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $address = $_POST['address'];
-    $payment = $_POST['payment_method'];
+$product = $result->fetch_assoc();
 
+// ✅ Handle order submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name'], $_POST['email'], $_POST['phone'], $_POST['address'], $_POST['payment_method'])) {
     $buyer_id = $_SESSION['user_id'];
+    $seller_id = $product['user_id'];
+    $price = $product['price'];
     $payment_status = "Paid";
 
-    foreach ($products as $p) {
-        $product_id = $p['product_id'];
-        $seller_id = $p['user_id'];
-        $price = $p['price'] * $p['quantity'];
+    $stmt = $conn->prepare("INSERT INTO orders (buyer_id, product_id, seller_id, total_price, payment_status) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("iiids", $buyer_id, $product_id, $seller_id, $price, $payment_status);
+    $stmt->execute();
 
-        $stmt = $conn->prepare("INSERT INTO orders (buyer_id, product_id, seller_id, total_price, payment_status) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("iiids", $buyer_id, $product_id, $seller_id, $price, $payment_status);
-        $stmt->execute();
-    }
-
-    $_SESSION['cart'] = []; // clear cart
-    echo "<script>alert('✅ Order placed successfully!'); window.location.href='profile.php';</script>";
+    echo "<script>alert('✅ Order placed successfully!'); window.location.href = 'profile.php';</script>";
     exit();
 }
 ?>
 
+<!-- ✅ Checkout UI -->
 <div class="wrapper">
     <main>
         <h2>Checkout</h2>
 
         <div class="checkout-card">
-            <?php foreach ($products as $product): ?>
-                <div style="border-bottom: 1px solid #ccc; margin-bottom: 15px; padding-bottom: 10px;">
-                    <img src="../imgs/<?= htmlspecialchars($product['image']) ?>" class="checkout-image" alt="Product Image">
-                    <h4><?= htmlspecialchars($product['title']) ?></h4>
-                    <p><strong>Qty:</strong> <?= $product['quantity'] ?> &nbsp; | &nbsp; 
-                       <strong>Price:</strong> $<?= number_format($product['price'], 2) ?></p>
-                </div>
-            <?php endforeach; ?>
-
-            <p><strong>Total:</strong> $<?= number_format($total, 2) ?></p>
+            <img src="../imgs/<?= htmlspecialchars($product['image']) ?>" alt="Product Image" class="checkout-image">
+            <h4><?= htmlspecialchars($product['title']) ?></h4>
+            <p><strong>Brand:</strong> <?= htmlspecialchars($product['brand']) ?></p>
+            <p><strong>Price:</strong> $<?= number_format($product['price'], 2) ?></p>
 
             <form method="POST" class="checkout-form" onsubmit="return validateCardFields()">
+                <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
+
                 <label>Full Name:</label>
                 <input type="text" name="name" required>
 
