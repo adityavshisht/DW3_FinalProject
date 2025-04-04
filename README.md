@@ -29,12 +29,12 @@ Search Bar – Allows users to find specific products.
 Category Selection
 Users can choose from various categories, including:
 
- Phones
-Laptops
-Tablets
-Smartwatches
-Headphones
-Keyboards
+Phones,
+Laptops,
+Tablets,
+Smartwatches,
+Headphones,
+Keyboards,
 Computer Accessories
 
 Product Listing Process
@@ -47,12 +47,12 @@ Pickup Slot Booking – Sellers can book a pickup time for their device, making 
 
 3. Buying Functionality
 Browse & Purchase Categories:
-Refurbished Phones
-Laptops
-Tablets
-Smartwatches
-Headphones
-Computer Accessories
+Refurbished Phones,
+Laptops,
+Tablets,
+Smartwatches,
+Headphones,
+Computer Accessories,
 Product Details View – Buyers can see detailed product descriptions.
 Secure Payment Processing – Various payment options for safe transactions.
 
