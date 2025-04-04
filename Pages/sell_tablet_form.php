@@ -1,8 +1,10 @@
 <?php
 session_start();
 
+// Handle form submission when the user answers the tablet condition questions
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['turns_on'])) {
     
+	// Store the submitted answers in session for later use
     $_SESSION['tablet_condition'] = [
         'turns_on' => $_POST['turns_on'],
         'screen_condition' => $_POST['screen_condition'],
@@ -13,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['turns_on'])) {
         'warranty' => $_POST['warranty']
     ];
     
+	// Create an array of the responses for analysis
     $answers = [
         $_POST['turns_on'],
         $_POST['screen_condition'],
@@ -23,13 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['turns_on'])) {
         $_POST['warranty']
     ];
     
+	// Count how many "No" answers were submitted
     $total_questions = 7;
     $no_count = count(array_filter($answers, function($answer) {
         return $answer === 'No';
     }));
     $no_percentage = ($no_count / $total_questions) * 100;
     
-   
+    // Determine the condition message based on the percentage of "No" responses
     if ($no_percentage > 75) {
         $condition_message = "The condition of your tablet is not good enough, and the estimated price may be very low.";
     } elseif ($no_percentage > 50) {
@@ -40,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['turns_on'])) {
         $condition_message = "Your tablet is in fair condition.";
     }
     
+	// Store the message in session and return it as JSON
     $_SESSION['condition_message'] = $condition_message;
     
   
@@ -125,6 +130,7 @@ include 'header.php';
 </div>
 
 <script>
+// Intercept form submission to send the data using fetch
 document.getElementById('tabletForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
