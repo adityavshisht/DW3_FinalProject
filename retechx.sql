@@ -146,11 +146,18 @@ CREATE TABLE `products` (
 --
 -- Dumping data for table products
 --
-
 INSERT INTO `products` (`product_id`, `user_id`, `category_id`, `title`, `brand`, `model`, `specifications`, `condition`, `price`, `status`, `created_at`, `image`) VALUES
 (1, 1, 1, 'iPhone 12', 'Apple', 'A2403', '128GB, Black', 'Good', 499.99, 'Available', '2025-03-27 20:32:07', 'iphone12.jpg'),
 (2, 2, 2, 'Dell XPS 13', 'Dell', '9380', 'i7, 16GB RAM, 512GB SSD', 'Very Good', 899.00, 'Available', '2025-03-27 20:32:07', 'laptop1.jpg'),
-(3, 1, 5, 'Sony WH-1000XM4', 'Sony', 'WH-1000XM4', 'Noise Cancelling Headphones', 'Like New', 250.00, 'Available', '2025-03-27 20:32:07', 'headphones1.jpg');
+(3, 1, 5, 'Sony WH-1000XM4', 'Sony', 'WH-1000XM4', 'Noise Cancelling Headphones', 'Like New', 250.00, 'Available', '2025-03-27 20:32:07', 'headphones1.jpg'),
+(4, 3, 4, 'Apple Watch Series 7', 'Apple', 'Series 7', 'GPS, 41mm, Midnight Aluminum Case', 'New', 399.00, 'Available', '2025-04-04 10:00:00', 'applewatch.jpg'),
+(5, 4, 3, 'Samsung Galaxy Tab S7', 'Samsung', 'SM-T870', '11-inch, 128GB, Mystic Black', 'Very Good', 649.99, 'Available', '2025-04-04 10:30:00', 'galaxytab7.jpg'),
+(6, 5, 2, 'HP Spectre x360', 'HP', '14-ea0023dx', 'i7, 16GB RAM, 1TB SSD', 'Like New', 1249.99, 'Available', '2025-04-04 11:00:00', 'hpspectrex360.jpg'),
+(7, 6, 6, 'Logitech MX Master 3', 'Logitech', 'MX Master 3', 'Advanced Wireless Mouse', 'New', 99.99, 'Available', '2025-04-04 11:30:00', 'logitechmx3.jpg'),
+(8, 7, 1, 'Google Pixel 5', 'Google', 'Pixel 5', '128GB, Just Black', 'Good', 699.00, 'Available', '2025-04-04 12:00:00', 'pixel5.jpg'),
+(9, 8, 3, 'Microsoft Surface Pro 7', 'Microsoft', 'Pro 7', 'i5, 8GB RAM, 128GB SSD', 'Very Good', 749.99, 'Available', '2025-04-04 12:30:00', 'surfacepro7.jpg'),
+(10, 1, 3, 'iPad Pro 12.9', 'Apple', '5th Gen', '256GB, Space Gray', 'New', 1099.00, 'Available', '2025-04-04 13:00:00', 'ipadpro.jpg');
+
 
 -- --------------------------------------------------------
 
