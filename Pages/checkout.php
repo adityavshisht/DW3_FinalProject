@@ -1,150 +1,174 @@
 <?php
 session_start();
 include 'header.php';
-include 'database_connection.php'; // Provides $pdo connection
+include 'database_connection.php'; // your PDO connection
 
-// Redirect to login if the user isn't authenticated
 if (!isset($_SESSION['user_id'])) {
-    $redirectTo = "checkout.php?product_id=" . urlencode($_GET['product_id'] ?? '');
-    header("Location: login.php?redirect=" . $redirectTo);
+    header("Location: login.php");
     exit();
 }
 
-// Determine which product the user is checking out
-$product_id = $_SERVER['REQUEST_METHOD'] === 'POST'
-    ? (int)($_POST['product_id'] ?? 0)
-    : (int)($_GET['product_id'] ?? 0);
+$user_id = $_SESSION['user_id'];
+$productsToCheckout = [];
+$totalAmount = 0;
 
-// Show error if product ID is missing
-if (!$product_id) {
-    echo "<main><h2>No product selected for checkout.</h2><a href='buy.php' class='btn'>Browse Products</a></main>";
-    include 'footer.php';
-    exit();
-}
+// STEP 1: DETECT IF SINGLE PRODUCT OR CART CHECKOUT
+if (isset($_GET['product_id'])) {
+    // Single product checkout
+    $product_id = (int)$_GET['product_id'];
 
-// Fetch product details from the database
-try {
     $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id = :product_id");
     $stmt->execute([':product_id' => $product_id]);
     $product = $stmt->fetch(PDO::FETCH_ASSOC);
-	
-    // Show error if the product is not found
-    if (!$product) {
-        echo "<main><h2>Product not found.</h2><a href='buy.php' class='btn'>Back to Products</a></main>";
-        include 'footer.php';
+
+    if ($product) {
+        $product['quantity'] = 1;
+        $productsToCheckout[] = $product;
+        $totalAmount = $product['price'];
+    } else {
+        echo "<div class='error'>Product not found.</div>";
         exit();
     }
-} catch (PDOException $e) {
-    // Optional: error_log($e->getMessage());
-    echo "<main><h2>Error fetching product details.</h2><a href='buy.php' class='btn'>Back to Products</a></main>";
-    include 'footer.php';
-    exit();
+} else {
+    // Cart checkout
+    if (empty($_SESSION['cart'])) {
+        echo "<div class='error'>Your cart is empty.</div>";
+        exit();
+    }
+
+    $cart_ids = array_keys($_SESSION['cart']);
+    $in_clause = implode(',', array_fill(0, count($cart_ids), '?'));
+
+    $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id IN ($in_clause)");
+    $stmt->execute($cart_ids);
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($products as $product) {
+        $quantity = $_SESSION['cart'][$product['product_id']];
+        $product['quantity'] = $quantity;
+        $productsToCheckout[] = $product;
+        $totalAmount += $product['price'] * $quantity;
+    }
 }
 
-// Handle form submission and create the order
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name'], $_POST['email'], $_POST['phone'], $_POST['address'], $_POST['payment_method'])) {
-    $buyer_id = $_SESSION['user_id'];
-    $seller_id = $product['user_id'];
-    $price = $product['price'];
-    $payment_status = "Paid";
+// STEP 2: IF FORM SUBMITTED, INSERT INTO ORDERS
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = $_POST['name'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $phone = $_POST['phone'] ?? '';
+    $address = $_POST['address'] ?? '';
+    $payment_method = $_POST['payment_method'] ?? '';
+    $payment_status = "Paid"; // Adjust logic as needed
+
+    // Optionally collect card details
+    $card_number = $_POST['card_number'] ?? null;
+    $expiry_date = $_POST['expiry_date'] ?? null;
+    $cvv = $_POST['cvv'] ?? null;
 
     try {
-        $stmt = $pdo->prepare("INSERT INTO orders (buyer_id, product_id, seller_id, total_price, payment_status) VALUES (:buyer_id, :product_id, :seller_id, :total_price, :payment_status)");
-        $stmt->execute([
-            ':buyer_id' => $buyer_id,
-            ':product_id' => $product_id,
-            ':seller_id' => $seller_id,
-            ':total_price' => $price,
-            ':payment_status' => $payment_status
-        ]);
+        foreach ($productsToCheckout as $item) {
+            $stmt = $pdo->prepare("INSERT INTO orders (buyer_id, product_id, seller_id, total_price, payment_status)
+                                   VALUES (:buyer_id, :product_id, :seller_id, :total_price, :payment_status)");
+            $stmt->execute([
+                ':buyer_id' => $user_id,
+                ':product_id' => $item['product_id'],
+                ':seller_id' => $item['user_id'],
+                ':total_price' => $item['price'] * $item['quantity'],
+                ':payment_status' => $payment_status
+            ]);
+        }
 
-        echo "<script>alert('✅ Order placed successfully!'); window.location.href = 'profile.php';</script>";
+        // Clear cart after checkout
+        if (!isset($_GET['product_id'])) {
+            $_SESSION['cart'] = [];
+        }
+
+        echo "<script>alert('Order placed successfully!'); window.location.href = 'profile.php';</script>";
         exit();
-    } catch (PDOException $e) {
-        // Optional: error_log($e->getMessage());
-        echo "<script>alert('Error placing order. Please try again.'); window.location.href = 'checkout.php?product_id=$product_id';</script>";
+    } catch (Exception $e) {
+        echo "<div class='error'>Error placing order: " . $e->getMessage() . "</div>";
         exit();
     }
 }
 ?>
 
-<!-- Checkout UI -->
 <div class="wrapper">
-    <main>
-        <h2>Checkout</h2>
+    <main class="checkout-container">
+        
+        <h1>- - Checkout Process  - -</h1>
 
-        <div class="checkout-card">
-            <img src="../imgs/<?= htmlspecialchars($product['image']) ?>" alt="Product Image" class="checkout-image">
-            <h4><?= htmlspecialchars($product['title']) ?></h4>
-            <p><strong>Brand:</strong> <?= htmlspecialchars($product['brand']) ?></p>
-            <p><strong>Price:</strong> $<?= number_format($product['price'], 2) ?></p>
+        <?php foreach ($productsToCheckout as $product): ?>
+            <div class="product-box">
+                <h4><?= htmlspecialchars($product['title']) ?></h4>
+                <p><strong>Brand:</strong> <?= htmlspecialchars($product['brand']) ?></p>
+                <p><strong>Price:</strong> $<?= number_format($product['price'], 2) ?> × <?= $product['quantity'] ?></p>
+            </div>
+        <?php endforeach; ?>
 
-            <form method="POST" class="checkout-form" onsubmit="return validateCardFields()">
-                <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
+        <p class="total-price"><strong>Total: $<?= number_format($totalAmount, 2) ?></strong></p>
 
-                <label>Full Name:</label>
-                <input type="text" name="name" required>
+        <form method="POST" class="checkout-form">
+            <div class="form-group">
+                <label for="name">Full Name:</label>
+                <input type="text" name="name" id="name" required>
+            </div>
 
-                <label>Email:</label>
-                <input type="email" name="email" required>
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" name="email" id="email" required>
+            </div>
 
-                <label>Phone Number:</label>
-                <input type="tel" name="phone" required>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="text" name="phone" id="phone" required>
+            </div>
 
-                <label>Shipping Address:</label>
-                <textarea name="address" required></textarea>
+            <div class="form-group">
+                <label for="address">Shipping Address:</label>
+                <textarea name="address" id="address" required></textarea>
+            </div>
 
-                <label>Payment Method:</label>
-                <select name="payment_method" id="paymentMethod" required onchange="toggleCardFields()">
-                    <option value="">-- Select --</option>
+            <div class="form-group">
+                <label for="payment_method">Payment Method:</label>
+                <select name="payment_method" id="payment_method" required>
+                    <option value="">-- Select Payment Method --</option>
                     <option value="Credit Card">Credit Card</option>
                     <option value="Debit Card">Debit Card</option>
-                    <option value="MasterCard">MasterCard</option>
+                    <option value="Mastercard">Mastercard</option>
                     <option value="Cash on Delivery">Cash on Delivery</option>
                 </select>
+            </div>
 
-                <div id="cardDetails" style="display: none;">
-                    <label>Card Number:</label>
-                    <input type="text" name="card_number" maxlength="16" pattern="\d{16}" placeholder="1234567812345678" inputmode="numeric">
+            <!-- Card Details Section (Hidden by default) -->
+            <div id="cardDetails" style="display: none;">
+                <label>Card Number:</label>
+                <input type="text" name="card_number" maxlength="16" pattern="\d{16}" placeholder="1234567812345678" inputmode="numeric">
 
-                    <label>Expiry Date:</label>
-                    <input type="month" name="expiry_date">
+                <label>Expiry Date:</label>
+                <input type="month" name="expiry_date">
 
-                    <label>CVV:</label>
-                    <input type="text" name="cvv" maxlength="4" pattern="\d{3,4}" placeholder="123" inputmode="numeric">
-                </div>
+                <label>CVV:</label>
+                <input type="text" name="cvv" maxlength="4" pattern="\d{3,4}" placeholder="123" inputmode="numeric">
+            </div>
 
-                <button type="submit" class="btn">Confirm Order</button>
-            </form>
-        </div>
+            <button type="submit" class="btn">Place Order</button>
+        </form>
     </main>
 </div>
 
 <script>
-function toggleCardFields() {
-    const method = document.getElementById('paymentMethod').value;
-    const cardFields = document.getElementById('cardDetails');
-    cardFields.style.display = (method === 'Credit Card' || method === 'Debit Card' || method === 'MasterCard') ? 'block' : 'none';
-}
+    const paymentMethodSelect = document.getElementById('payment_method');
+    const cardDetailsDiv = document.getElementById('cardDetails');
 
-function validateCardFields() {
-    const method = document.getElementById('paymentMethod').value;
-    if (method === 'Credit Card' || method === 'Debit Card' || method === 'MasterCard') {
-        const number = document.querySelector('[name="card_number"]').value.trim();
-        const cvv = document.querySelector('[name="cvv"]').value.trim();
+    paymentMethodSelect.addEventListener('change', function () {
+        const selected = this.value;
 
-        if (number.length !== 16 || !/^\d{16}$/.test(number)) {
-            alert("Please enter a valid 16-digit card number.");
-            return false;
+        if (selected === 'Credit Card' || selected === 'Debit Card' || selected === 'Mastercard') {
+            cardDetailsDiv.style.display = 'block';
+        } else {
+            cardDetailsDiv.style.display = 'none';
         }
-
-        if (cvv.length < 3 || !/^\d{3,4}$/.test(cvv)) {
-            alert("Please enter a valid 3 or 4-digit CVV.");
-            return false;
-        }
-    }
-    return true;
-}
+    });
 </script>
 
 <?php include 'footer.php'; ?>
