@@ -65,6 +65,9 @@ try {
     <?php else: ?>
         <p>No orders found.</p>
     <?php endif; ?>
+
+    <p><a href="appointment_history.php" class="btn">Appointments</a></p>
+
 </main>
 
 <?php include 'footer.php'; ?>

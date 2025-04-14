@@ -25,7 +25,7 @@ if (!function_exists('protect_link')) {
         <h1>ReTechX</h1>
         <nav>
             <ul>
-                <li><a href="/dw3/DW3_FinalProject/index.php">Home</a></li>
+                <li><a href="/DW3_FinalProject/index.php">Home</a></li>
                 <li><a href="<?= protect_link('sell.php') ?>">Sell</a></li>
                 <li><a href="buy.php">Buy</a></li>
                 <li><a href="<?= protect_link('profile.php') ?>">Profile</a></li>
