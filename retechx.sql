@@ -240,7 +240,7 @@ INSERT INTO `users` (`user_id`, `name`, `email`, `password`, `phone`, `address`,
 (5, 'harman@proj25', 'harman@proj25', '$2y$10$fGJPO56UI2KPsHZ3pW0Hg.YzGUT0CRE8se0WDNgnXGesypMT39YUm', NULL, NULL, 'user'),
 (6, 'Riya M', 'riyamanoj@yahoo.com', '$2y$10$Ff5gv3tGRh8GZOdy8fuAPeoPxu3nI/lDj//ZuQwNnEKIUhqkVAFze', NULL, NULL, 'user'),
 (7, 'Aditya Sharma', 'aditya01@hotmail.com', '$2y$10$Zv35XXxVaP315lHsAS5kf.MAi3jt3nVeUFgBlS9JBOnGd/djMcUGq', NULL, NULL, 'user'),
-(8, 'Sankini', 'sankini@gmail.com', '$2y$10$RqhPQy6AmF0KVzpyfOQ81.29JLPtJkIpp00XXhD48aUd5a7ZCzBWu', NULL, NULL, 'user');
+(8, 'Sankini', 'sankini@gmail.com', '$2y$10$qQvt1/T/7mHTsIW1pyZKYONtk2KWh4NOC5IALmEeEz7obWnY6Og.y', NULL, NULL, 'user');
 
 --
 -- Indexes for dumped tables
