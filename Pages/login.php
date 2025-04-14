@@ -11,7 +11,7 @@
   }
 
   // Handle redirect destination after login
-  $redirect = $_GET['redirect'] ?? 'index.php';
+  $redirect = $_GET['redirect'] ?? '/dw3/DW3_FinalProject/index.php';
   
   // If there's a product ID to preserve in redirect, append it
   if (isset($_GET['id'])) {

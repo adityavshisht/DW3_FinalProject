@@ -5,5 +5,5 @@ include 'sessions.php';
 session_destroy();
 
 // Redirect back to the homepage
-header('Location: index.php');
+header('Location: /dw3/DW3_FinalProject/index.php');
 exit();

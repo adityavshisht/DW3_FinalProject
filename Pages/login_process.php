@@ -6,7 +6,7 @@ include 'database_connection.php'; // Provides the $pdo connection
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
-    $redirectPage = $_POST['redirect'] ?? 'index.php';
+    $redirectPage = $_POST['redirect'] ?? '/dw3/DW3_FinalProject/index.php';
 
     try {
 		// Attempt to find a user with the provided email
