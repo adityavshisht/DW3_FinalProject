@@ -44,43 +44,58 @@ $categories = $statement->fetchAll(PDO::FETCH_ASSOC); // Get categories as assoc
 
 <?php if (isset($_SESSION['user_id'])): ?>
 <script>
-    // Dynamically redirect the form based on selected category
-    document.getElementById('sellForm').addEventListener('submit', function(e) {
-        e.preventDefault(); 
+document.getElementById('sellForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-        const categoryDropdown = document.getElementById('categorySelect');
-        const selectedOption = categoryDropdown.options[categoryDropdown.selectedIndex];
-        const categoryName = selectedOption.dataset.name;
+    const productName = document.querySelector('[name="product_name"]').value.toLowerCase();
+    const categorySelect = document.getElementById('categorySelect');
+    const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+    const categoryName = selectedOption.dataset.name;
+    const categoryId = categorySelect.value;
 
-        let targetPage = '';
-        switch (categoryName) {
-            case 'Phone':
-                targetPage = 'sell_phone_form.php';
-                break;
-            case 'Laptop':
-                targetPage = 'sell_laptop_form.php';
-                break;
-            case 'Tablet':
-                targetPage = 'sell_tablet_form.php';
-                break;
-            case 'Smartwatch':
-                targetPage = 'sell_smartwatches_form.php';
-                break;
-            case 'Headphones':
-                targetPage = 'sell_headphones_form.php';
-                break;
-            case 'Keyboards':
-                targetPage = 'sell_keyboard_form.php';
-                break;
-            case 'Computer Accessories':
-                targetPage = 'sell_accessories_form.php';
-                break;
-        }
+    //keyword mapping for validations
+    const categoryKeywords = {
+        'Phone': ['iphone', 'samsung', 'pixel', 'oppo', 'vivo', 'oneplus', 'realme', 'redmi', 'xiomi'],
+        'Laptop': ['macbook', 'dell', 'hp', 'asus', 'acer', 'laptop', 'lenovo'],
+        'Tablet': ['ipad', 'tab', 'tablet', 'galaxy tab'],
+        'Smartwatch': ['smartwatch', 'fitbit', 'watch', 'galaxy watch'],
+        'Headphones': ['headphones', 'earbuds', 'earphones', 'airpods'],
+        'Keyboards': ['keyboard', 'mechanical keyboard', 'gaming keyboard'],
+        'Computer Accessories': ['charger', 'mouse', 'case', 'cover', 'accessory']
+    };
 
-        this.action = targetPage;
-        this.submit();
-    });
+    //validate the product name to matche the selected category
+    const expectedKeywords = categoryKeywords[categoryName];
+    const matchesCategory = expectedKeywords?.some(keyword => productName.includes(keyword));
+
+    if (!matchesCategory) {
+        alert(`The product name doesn't seem to be a "${categoryName}". Please put the correct category.`);
+        return;
+    }
+
+    //category to form mapping
+    const categoryForms = {
+        'Phone': 'sell_phone_form.php',
+        'Laptop': 'sell_laptop_form.php',
+        'Tablet': 'sell_tablet_form.php',
+        'Smartwatch': 'sell_smartwatches_form.php',
+        'Headphones': 'sell_headphones_form.php',
+        'Keyboards': 'sell_keyboard_form.php',
+        'Computer Accessories': 'sell_accessories_form.php'
+    };
+
+    const targetPage = categoryForms[categoryName];
+
+    if (!targetPage) {
+        alert("Sorry, no form available for the selected category.");
+        return;
+    }
+
+    this.action = targetPage;
+    this.submit();
+});
 </script>
+
 <?php endif; ?>
 
 <?php include 'footer.php'; ?>

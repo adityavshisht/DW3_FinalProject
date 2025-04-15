@@ -7,8 +7,8 @@ $port     = '3306';      // Default MySQL port
 $charset  = 'utf8mb4';   // UTF-8 charset with support for emojis and special characters
 
 // Credentials (This should be replace with own)
-$username = ' ';          
-$password = ' ';  
+$username = ''; // Enter YOUR username here
+$password = ''; // Enter YOUR password here 
 
 // PDO options for secure and consistent behavior
 $options  = [
