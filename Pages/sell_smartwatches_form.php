@@ -4,7 +4,7 @@ session_start();
 // Handle form submission for smartwatch condition
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['working_display'])) {
     
-	// Save user responses to session
+    // Save user responses to session
     $_SESSION['smartwatch_condition'] = [
         'working_display' => $_POST['working_display'],
         'battery_health' => $_POST['battery_health'],
@@ -19,16 +19,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['working_display'])) {
         $_POST['battery_health'],
         $_POST['strap_condition'],
         $_POST['has_charger'],
-        $_POST['water_damage'] === 'Yes' ? 'No' : 'Yes' // 'Yes' to water damage is treated as a negative
+        $_POST['water_damage'] === 'Yes' ? 'No' : 'Yes' // Treat water damage as a negative
     ];
     
     $total_questions = 5;
-	
-	// Count the number of negative ("No") answers
+    
+    // Count the number of negative ("No") answers
     $no_count = count(array_filter($answers, function($answer) {
         return $answer === 'No';
     }));
-	
+    
     $no_percentage = ($no_count / $total_questions) * 100;
     
     // Determine message based on condition score
@@ -42,9 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['working_display'])) {
         $condition_message = "Your smartwatch is in fair condition.";
     }
     
-	// Store result and respond with JSON
+    // Store result and respond with JSON
     $_SESSION['condition_message'] = $condition_message;
-    
     
     header('Content-Type: application/json');
     echo json_encode(['message' => $condition_message]);
@@ -99,7 +98,6 @@ include 'header.php';
         <div class="question">
             <h3>5. Has it suffered any water damage?</h3>
             <p>Check for signs of water exposure or damage.</p>
-           
             <input type="radio" id="water_yes" name="water_damage" value="Yes">
             <label for="water_yes">Yes</label>
             <input type="radio" id="water_no" name="water_damage" value="No" required>
@@ -108,26 +106,31 @@ include 'header.php';
 
         <button type="submit">Continue →</button>
     </form>
+
+    <div id="conditionMessage" class="condition-message"></div>
 </div>
 
 <script>
 document.getElementById('smartwatchForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     const formData = new FormData(this);
-    
+    const conditionMessageDiv = document.getElementById('conditionMessage');
+
     fetch('', {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
-        alert(data.message);
-        window.location.href = 'schedule_appointment.php';
+        conditionMessageDiv.textContent = data.message;
+        setTimeout(() => {
+            window.location.href = 'schedule_appointment.php';
+        }, 3000); // Redirect after 3 seconds
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while processing your request.');
+        conditionMessageDiv.textContent = 'An error occurred while processing your request.';
     });
 });
 </script>

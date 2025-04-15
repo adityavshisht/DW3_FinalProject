@@ -3,8 +3,8 @@ session_start();
 
 // Handle form submission when the user answers the tablet condition questions
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['turns_on'])) {
-    
-	// Store the submitted answers in session for later use
+
+    // Store the submitted answers in session for later use
     $_SESSION['tablet_condition'] = [
         'turns_on' => $_POST['turns_on'],
         'screen_condition' => $_POST['screen_condition'],
@@ -14,8 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['turns_on'])) {
         'original_charger' => $_POST['original_charger'],
         'warranty' => $_POST['warranty']
     ];
-    
-	// Create an array of the responses for analysis
+
+    // Create an array of the responses for analysis
     $answers = [
         $_POST['turns_on'],
         $_POST['screen_condition'],
@@ -25,14 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['turns_on'])) {
         $_POST['original_charger'],
         $_POST['warranty']
     ];
-    
-	// Count how many "No" answers were submitted
+
+    // Count how many "No" answers were submitted
     $total_questions = 7;
     $no_count = count(array_filter($answers, function($answer) {
         return $answer === 'No';
     }));
     $no_percentage = ($no_count / $total_questions) * 100;
-    
+
     // Determine the condition message based on the percentage of "No" responses
     if ($no_percentage > 75) {
         $condition_message = "The condition of your tablet is not good enough, and the estimated price may be very low.";
@@ -43,11 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['turns_on'])) {
     } else {
         $condition_message = "Your tablet is in fair condition.";
     }
-    
-	// Store the message in session and return it as JSON
+
+    // Store the message in session and return it as JSON
     $_SESSION['condition_message'] = $condition_message;
-    
-  
+
     header('Content-Type: application/json');
     echo json_encode(['message' => $condition_message]);
     session_write_close();
@@ -60,7 +59,7 @@ include 'header.php';
 <div class="container">
     <h2>Tell us more about your tablet</h2>
     <p>Please answer a few questions about your tablet.</p>
-    
+
     <form id="tabletForm" action="" method="POST">
         <div class="question">
             <h3>1. Does the tablet turn on and function properly?</h3>
@@ -127,27 +126,32 @@ include 'header.php';
 
         <button type="submit">Continue →</button>
     </form>
+
+    <div id="conditionMessage" class="condition-message"></div>
 </div>
 
 <script>
 // Intercept form submission to send the data using fetch
 document.getElementById('tabletForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     const formData = new FormData(this);
-    
+    const conditionMessageDiv = document.getElementById('conditionMessage');
+
     fetch('', {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
-        alert(data.message);
-        window.location.href = 'schedule_appointment.php';
+        conditionMessageDiv.textContent = data.message;
+        setTimeout(() => {
+            window.location.href = 'schedule_appointment.php';
+        }, 3000); // Redirect after 3 seconds
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while processing your request.');
+        conditionMessageDiv.textContent = 'An error occurred while processing your request.';
     });
 });
 </script>

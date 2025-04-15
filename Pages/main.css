@@ -194,3 +194,118 @@ footer {
     position: relative;
     bottom: 0;
 }
+
+
+/* equipment Condition Form Styles */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.question {
+    margin-bottom: 20px;
+}
+
+.question h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.question p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+input[type="radio"] {
+    margin-right: 10px;
+}
+
+label {
+    font-size: 16px;
+    margin-right: 20px;
+}
+
+button {
+    background-color: #444;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #555;
+    transform: translateY(-1px);
+}
+
+.condition-message {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    text-align: center;
+}
+
+/* Appointment Form Styles */
+.appointment-form {
+    max-width: 600px; /* Slightly wider for better readability */
+    margin: 0 auto;
+    text-align: left;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 30px; /* Increased spacing between fields */
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px; /* More space between label and input */
+    font-size: 16px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px; /* Slightly larger padding for inputs */
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.form-group textarea {
+    height: 120px; /* Slightly taller textarea */
+    resize: vertical;
+}
+
+.form-group input[readonly] {
+    background-color: #f0f0f0;
+    color: #666;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 16px;
+}

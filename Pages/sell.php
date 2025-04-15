@@ -16,12 +16,14 @@ $categories = $statement->fetchAll(PDO::FETCH_ASSOC); // Get categories as assoc
 <?php else: ?>
     <h2>Sell Your Electronic Device</h2>
 	
-	<!-- Product submission form -->
-    <form id="sellForm" method="post">
-        <label>Product Name:</label>
+	<form id="sellForm" method="post" style="display: flex; flex-direction: column; gap: 15px; max-width: 400px;">
+    <label>
+        Product Name:
         <input type="text" name="product_name" required>
+    </label>
 
-        <label>Category:</label>
+    <label>
+        Category:
         <select name="category_id" id="categorySelect" required>
             <option value="">-- Select Category --</option>
             <?php foreach ($categories as $category): ?>
@@ -30,15 +32,21 @@ $categories = $statement->fetchAll(PDO::FETCH_ASSOC); // Get categories as assoc
                 </option>
             <?php endforeach; ?>
         </select>
+    </label>
 
-        <label>Price:</label>
+    <label>
+        Price:
         <input type="number" name="price" required>
+    </label>
 
-        <label>Description:</label>
+    <label>
+        Description:
         <textarea name="description"></textarea>
+    </label>
 
-        <button type="submit">Submit</button>
-    </form>
+    <button type="submit">Submit</button>
+</form>
+
 <?php endif; ?>
 </main>
 

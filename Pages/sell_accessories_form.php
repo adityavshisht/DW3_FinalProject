@@ -91,6 +91,7 @@ include 'header.php';
 
         <button type="submit">Continue →</button>
     </form>
+    <div id="conditionMessage" class="condition-message"></div>
 </div>
 
 <script>
@@ -99,6 +100,7 @@ document.getElementById('accessoryForm').addEventListener('submit', function(e) 
     e.preventDefault();
     
     const formData = new FormData(this);
+    const conditionMessageDiv = document.getElementById('conditionMessage');
     
     fetch('', {
         method: 'POST',
@@ -106,12 +108,14 @@ document.getElementById('accessoryForm').addEventListener('submit', function(e) 
     })
     .then(response => response.json())
     .then(data => {
-        alert(data.message);
-        window.location.href = 'schedule_appointment.php';
+        conditionMessageDiv.textContent = data.message;
+        setTimeout(() => {
+            window.location.href = 'schedule_appointment.php';
+        }, 3000); // Redirect after 3 seconds
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while processing your request.');
+        conditionMessageDiv.textContent = 'An error occurred while processing your request.';
     });
 });
 </script>

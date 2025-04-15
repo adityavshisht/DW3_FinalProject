@@ -5,7 +5,7 @@ session_start();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['audio_quality'])) {
 
     // Save responses to session
-	$_SESSION['headphones_condition'] = [
+    $_SESSION['headphones_condition'] = [
         'audio_quality' => $_POST['audio_quality'],
         'mic_working' => $_POST['mic_working'],
         'earpad_condition' => $_POST['earpad_condition'],
@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['audio_quality'])) {
         'has_box' => $_POST['has_box']
     ];
     
-	// Gather answers for condition evaluation
+    // Gather answers for condition evaluation
     $answers = [
         $_POST['audio_quality'],
         $_POST['mic_working'],
@@ -24,15 +24,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['audio_quality'])) {
     
     $total_questions = 5;
     
-	// Count how many answers indicate a problem 
-	$no_count = count(array_filter($answers, function($answer) {
+    // Count how many answers indicate a problem 
+    $no_count = count(array_filter($answers, function($answer) {
         return $answer === 'No';
     }));
-	
+    
     $no_percentage = ($no_count / $total_questions) * 100;
 
     // Generate condition message based on "No" answers
-	if ($no_percentage > 75) {
+    if ($no_percentage > 75) {
         $condition_message = "The condition of your headphones is not good enough, and the estimated price may be very low.";
     } elseif ($no_percentage > 50) {
         $condition_message = "The condition of your headphones is good, and the price will be moderate.";
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['audio_quality'])) {
         $condition_message = "Your headphones are in fair condition.";
     }
     
-	// Store message and return JSON response
+    // Store message and return JSON response
     $_SESSION['condition_message'] = $condition_message;
     
     header('Content-Type: application/json');
@@ -58,7 +58,7 @@ include 'header.php';
     <h2>Tell us more about your headphones</h2>
     <p>Please answer a few questions about your headphones.</p>
     
-    <form id="headphonesForm" action="" method="POST">
+    <form id="headphonesForm" method="POST">
         <div class="question">
             <h3>1. Is the audio quality clear?</h3>
             <p>Check if the sound is clear without distortion or issues.</p>
@@ -106,13 +106,16 @@ include 'header.php';
 
         <button type="submit">Continue →</button>
     </form>
+    <div id="conditionMessage" class="condition-message"></div>
 </div>
 
 <script>
+// Handle form submission using Fetch API
 document.getElementById('headphonesForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
     const formData = new FormData(this);
+    const conditionMessageDiv = document.getElementById('conditionMessage');
     
     fetch('', {
         method: 'POST',
@@ -120,12 +123,14 @@ document.getElementById('headphonesForm').addEventListener('submit', function(e)
     })
     .then(response => response.json())
     .then(data => {
-        alert(data.message);
-        window.location.href = 'schedule_appointment.php';
+        conditionMessageDiv.textContent = data.message;
+        setTimeout(() => {
+            window.location.href = 'schedule_appointment.php';
+        }, 3000); // Redirect after 3 seconds
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while processing your request.');
+        conditionMessageDiv.textContent = 'An error occurred while processing your request.';
     });
 });
 </script>

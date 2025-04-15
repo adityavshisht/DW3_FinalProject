@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calls'])) {
         'bill' => $_POST['bill']
     ];
     
-	// Collect answers to evaluate condition
+    // Collect answers to evaluate condition
     $answers = [
         $_POST['calls'],
         $_POST['touchscreen'],
@@ -23,12 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calls'])) {
     ];
     
     $total_questions = 5;
-	
-	// Count how many responses are negative
+    
+    // Count how many responses are negative
     $no_count = count(array_filter($answers, function($answer) {
         return $answer === 'No';
     }));
-	
+    
     $no_percentage = ($no_count / $total_questions) * 100;
     
     // Generate condition feedback based on the user's answers
@@ -42,10 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calls'])) {
         $condition_message = "Your device is in fair condition.";
     }
     
-	// Save the message and respond with JSON
+    // Save the message and respond with JSON
     $_SESSION['condition_message'] = $condition_message;
     
- 
     header('Content-Type: application/json');
     echo json_encode(['message' => $condition_message]);
     session_write_close();
@@ -107,26 +106,31 @@ include 'header.php';
 
         <button type="submit">Continue →</button>
     </form>
+
+    <div id="conditionMessage" class="condition-message"></div>
 </div>
 
 <script>
 document.getElementById('deviceForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     const formData = new FormData(this);
-    
+    const conditionMessageDiv = document.getElementById('conditionMessage');
+
     fetch('', {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
-        alert(data.message);
-        window.location.href = 'schedule_appointment.php';
+        conditionMessageDiv.textContent = data.message;
+        setTimeout(() => {
+            window.location.href = 'schedule_appointment.php';
+        }, 3000); // Redirect after 3 seconds
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while processing your request.');
+        conditionMessageDiv.textContent = 'An error occurred while processing your request.';
     });
 });
 </script>

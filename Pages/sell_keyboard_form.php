@@ -4,7 +4,7 @@ session_start();
 // Handle form submission for keyboard
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['all_keys_work'])) {
     
-	// Save answers into the session
+    // Save answers into the session
     $_SESSION['keyboard_condition'] = [
         'all_keys_work' => $_POST['all_keys_work'],
         'usb_bluetooth_ok' => $_POST['usb_bluetooth_ok'],
@@ -23,12 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['all_keys_work'])) {
     ];
     
     $total_questions = 5;
-	
-	// Count how many responses are negative
+    
+    // Count how many responses are negative
     $no_count = count(array_filter($answers, function($answer) {
         return $answer === 'No';
     }));
-	
+    
     $no_percentage = ($no_count / $total_questions) * 100;
     
     // Generate message based on condition scoring
@@ -42,10 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['all_keys_work'])) {
         $condition_message = "Your keyboard is in fair condition.";
     }
     
-	// Store result and return it as a JSON response
+    // Store result and return it as a JSON response
     $_SESSION['condition_message'] = $condition_message;
     
-  
     header('Content-Type: application/json');
     echo json_encode(['message' => $condition_message]);
     session_write_close();
@@ -59,7 +58,7 @@ include 'header.php';
     <h2>Tell us more about your keyboard</h2>
     <p>Please answer a few questions about your keyboard.</p>
     
-    <form id="keyboardForm" action="" method="POST">
+    <form id="keyboardForm" method="POST">
         <div class="question">
             <h3>1. Are all keys working?</h3>
             <p>Test all keys to ensure they respond correctly.</p>
@@ -107,13 +106,16 @@ include 'header.php';
 
         <button type="submit">Continue →</button>
     </form>
+    <div id="conditionMessage" class="condition-message"></div>
 </div>
 
 <script>
+// Handle form submission using Fetch API
 document.getElementById('keyboardForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
     const formData = new FormData(this);
+    const conditionMessageDiv = document.getElementById('conditionMessage');
     
     fetch('', {
         method: 'POST',
@@ -121,12 +123,14 @@ document.getElementById('keyboardForm').addEventListener('submit', function(e) {
     })
     .then(response => response.json())
     .then(data => {
-        alert(data.message);
-        window.location.href = 'schedule_appointment.php';
+        conditionMessageDiv.textContent = data.message;
+        setTimeout(() => {
+            window.location.href = 'schedule_appointment.php';
+        }, 3000); // Redirect after 3 seconds
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while processing your request.');
+        conditionMessageDiv.textContent = 'An error occurred while processing your request.';
     });
 });
 </script>
