@@ -63,7 +63,7 @@ document.getElementById('sellForm').addEventListener('submit', function(e) {
 
     //keyword mapping for validations
     const categoryKeywords = {
-        'Phone': ['iphone', 'samsung', 'pixel', 'oppo', 'vivo', 'oneplus', 'realme', 'redmi', 'xiomi'],
+        'Phone': ['iphone', 'samsung', 'pixel', 'oppo', 'vivo', 'oneplus', 'realme', 'redmi', 'xiaomi','nokia','honor','blackberry','sony','lg','htc','asus','lenovo','motorola'],
         'Laptop': ['macbook', 'dell', 'hp', 'asus', 'acer', 'laptop', 'lenovo'],
         'Tablet': ['ipad', 'tab', 'tablet', 'galaxy tab'],
         'Smartwatch': ['smartwatch', 'fitbit', 'watch', 'galaxy watch'],
