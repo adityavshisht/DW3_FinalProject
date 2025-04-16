@@ -58,8 +58,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phone = $_POST['phone'] ?? '';
     $address = $_POST['address'] ?? '';
     $payment_method = $_POST['payment_method'] ?? '';
-    $payment_status = "Paid"; // Adjust logic as needed
-
+    if ($payment_method === "Cash on Delivery") {
+        $payment_status = "Payment Pending";
+    } else {
+        $payment_status = "Paid";
+    }
+    
     // Optionally collect card details
     $card_number = $_POST['card_number'] ?? null;
     $expiry_date = $_POST['expiry_date'] ?? null;
