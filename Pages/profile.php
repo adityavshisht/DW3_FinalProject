@@ -12,6 +12,12 @@ include 'database_connection.php'; // Provides the $pdo connection
 
 $userId = $_SESSION['user_id'];
 
+// Fetch user details
+$userSql = "SELECT name, email, phone, address FROM users WHERE user_id = :userId";
+$userStmt = $pdo->prepare($userSql);
+$userStmt->execute([':userId' => $userId]);
+$user = $userStmt->fetch(PDO::FETCH_ASSOC);
+
 // Fetch the logged-in user's order history
 $sql = "
     SELECT 
@@ -38,6 +44,15 @@ try {
     <h2>Your Profile</h2>
     <p>Welcome, <?= htmlspecialchars($_SESSION['username']) ?>!</p>
     <p>Manage your personal information and view your transactions.</p>
+	
+	<!-- User Information -->
+    <div style="max-width: 600px; margin: 20px auto; text-align: left;">
+        <p><strong>Name:</strong> <?= htmlspecialchars($user['name']) ?></p>
+        <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
+        <p><strong>Phone:</strong> <?= htmlspecialchars($user['phone'] ?? 'Not provided') ?></p>
+        <p><strong>Address:</strong> <?= htmlspecialchars($user['address'] ?? 'Not provided') ?></p>
+        <a href="edit_profile.php" class="btn">Update Profile</a>
+    </div>
 
     <!-- Cart & Logout -->
     <p><a href="cart.php" class="btn">View Cart</a></p>
